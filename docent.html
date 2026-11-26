@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Docentpagina · Oefenen met denk- en werkwijzen</title>
+<style>
+  :root { --ink:#14404A; --tekst:#1E2A32; --teal:#0F7C74; --teal-licht:#E3F0EE; --lijn:#C9D6D4; --grijs:#6B7A80; --achtergrond:#F6F9F8; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: Calibri, "Segoe UI", system-ui, Arial, sans-serif; color:var(--tekst); background:var(--achtergrond); font-size:16px; line-height:1.4; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 20px; }
+  h1, h2 { font-family: Cambria, Georgia, serif; color: var(--ink); margin: 0 0 .4em; }
+  .kaart { background:#fff; border-radius:14px; padding:16px 18px; margin-bottom:16px; box-shadow:0 1px 3px rgba(20,64,74,.08); }
+  table { width:100%; border-collapse:collapse; }
+  th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--lijn); vertical-align:top; }
+  th { color:var(--ink); font-size:.9rem; }
+  .label { display:inline-block; padding:.1em .55em; border-radius:99px; font-size:.75rem; font-weight:700; background:var(--teal-licht); color:var(--ink); }
+  button { font:inherit; font-size:.85rem; cursor:pointer; border-radius:8px; border:2px solid var(--lijn); background:#fff; color:var(--ink); padding:.3em .7em; margin:0 4px 4px 0; }
+  button:hover { border-color:var(--teal); }
+  button.ok { border-color:var(--teal); background:var(--teal-licht); }
+  code { font-family: Consolas, "Courier New", monospace; font-size:.8rem; color:var(--grijs); word-break:break-all; }
+  .klein { font-size:.85rem; color:var(--grijs); }
+  .voorbeeld { margin-top:10px; border:2px solid var(--lijn); border-radius:10px; overflow:hidden; }
+  .voorbeeld iframe { width:100%; height:700px; border:0; display:block; }
+  .hoogte { width:70px; font:inherit; padding:2px 4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Docentpagina</h1>
+  <p>Per onderdeel de link en de embedcode voor Learnbeat. Kies <b>Kopieer link</b> als Learnbeat om een webadres vraagt, of <b>Kopieer embedcode</b> voor een HTML- of embedblok. Met <b>Bekijk</b> zie je het onderdeel hieronder zoals een leerling het ziet.</p>
+  <div class="kaart">
+    <label class="klein">Hoogte van het venster in Learnbeat: <input class="hoogte" id="hoogte" type="number" value="900" min="400" step="50"> pixels</label>
+    <div class="klein" id="basis"></div>
+  </div>
+  <div id="lijst"></div>
+  <div class="kaart" id="voorbeeldkaart" style="display:none">
+    <h2 id="voorbeeldtitel"></h2>
+    <div class="voorbeeld"><iframe id="voorbeeld" title="voorbeeld"></iframe></div>
+  </div>
+</div>
+<script>
+(() => {
+  // Thema's en onderdelen. Nieuw thema (try-out 2): voeg hier een regel toe.
+  const THEMAS = [
+    { id: "tryout1", titel: "Try-out 1 · Afweer, virussen en bacteriën, thermoregulatie" },
+  ];
+  const ONDERDELEN = [
+    { id: "", naam: "Geheel met menu", uitleg: "Leerlingen kiezen zelf tussen ketenpuzzel en systeemdiagram." },
+    { id: "keten", naam: "Ketenpuzzel", label: "C21", uitleg: "Oorzaak-gevolgketens bouwen, foute schakels eruit (vwo: ook organisatieniveaus)." },
+    { id: "systeem", naam: "Systeemdiagram", label: "C23", uitleg: "Grens, deelsystemen, input, output en externe factor; vragen over verstoring." },
+  ];
+  const basis = new URL("oefenen/", location.href).href;
+  document.getElementById("basis").textContent = "Adres van de oefenomgeving: " + basis;
+
+  const link = (thema, niveau, onderdeel) => {
+    const p = new URLSearchParams({ thema, niveau });
+    if (onderdeel) p.set("onderdeel", onderdeel);
+    return basis + "?" + p.toString();
+  };
+  const embed = (url, titel) => `<iframe src="${url}" width="100%" height="${document.getElementById("hoogte").value || 900}" style="border:0" title="${titel}" loading="lazy"></iframe>`;
+
+  function kopieer(tekst, knop) {
+    const klaar = () => { const oud = knop.textContent; knop.textContent = "Gekopieerd ✓"; knop.classList.add("ok"); setTimeout(() => { knop.textContent = oud; knop.classList.remove("ok"); }, 1500); };
+    if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(tekst).then(klaar, () => terugval(tekst, klaar)); }
+    else terugval(tekst, klaar);
+  }
+  function terugval(tekst, klaar) {
+    const t = document.createElement("textarea"); t.value = tekst; document.body.append(t); t.select();
+    try { document.execCommand("copy"); klaar(); } catch (e) { window.prompt && 0; }
+    t.remove();
+  }
+  const knop = (tekst, actie) => { const b = document.createElement("button"); b.type = "button"; b.textContent = tekst; b.addEventListener("click", () => actie(b)); return b; };
+
+  const lijst = document.getElementById("lijst");
+  for (const th of THEMAS) {
+    const kaart = document.createElement("div"); kaart.className = "kaart";
+    const h2 = document.createElement("h2"); h2.textContent = th.titel; kaart.append(h2);
+    const tabel = document.createElement("table");
+    tabel.innerHTML = "<tr><th>Onderdeel</th><th>Havo</th><th>Vwo</th></tr>";
+    for (const o of ONDERDELEN) {
+      const tr = document.createElement("tr");
+      const td0 = document.createElement("td");
+      const naam = document.createElement("b"); naam.textContent = o.naam; td0.append(naam);
+      if (o.label) { const l = document.createElement("span"); l.className = "label"; l.style.marginLeft = "6px"; l.textContent = o.label; td0.append(l); }
+      const u = document.createElement("div"); u.className = "klein"; u.textContent = o.uitleg; td0.append(u);
+      tr.append(td0);
+      for (const niveau of ["havo", "vwo"]) {
+        const td = document.createElement("td");
+        const url = link(th.id, niveau, o.id);
+        const titel = `${o.naam} ${niveau}`;
+        td.append(
+          knop("Kopieer link", (b) => kopieer(url, b)),
+          knop("Kopieer embedcode", (b) => kopieer(embed(url, titel), b)),
+          knop("Bekijk", () => {
+            document.getElementById("voorbeeldkaart").style.display = "";
+            document.getElementById("voorbeeldtitel").textContent = `Voorbeeld: ${o.naam} · ${niveau}`;
+            document.getElementById("voorbeeld").src = url;
+            document.getElementById("voorbeeldkaart").scrollIntoView({ behavior: "smooth" });
+          }));
+        const c = document.createElement("div"); const code = document.createElement("code"); code.textContent = url; c.append(code); td.append(c);
+        tr.append(td);
+      }
+      tabel.append(tr);
+    }
+    kaart.append(tabel);
+    lijst.append(kaart);
+  }
+})();
+</script>
+</body>
+</html>
