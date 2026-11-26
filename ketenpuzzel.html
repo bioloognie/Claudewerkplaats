@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oefenen met denk- en werkwijzen · biologie</title>
+<style>
+  :root {
+    --ink: #14404A; --tekst: #1E2A32; --teal: #0F7C74; --teal-licht: #E3F0EE; --teal-mid: #CFE5E2;
+    --koraal: #E4572E; --koraal-licht: #FBE9E4; --amber: #C98A0B; --groen: #3D8B5A; --grijs: #6B7A80;
+    --lijn: #C9D6D4; --achtergrond: #F6F9F8; --wit: #fff;
+    --kop: Cambria, Georgia, "Times New Roman", serif;
+    --romp: Calibri, "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: var(--romp); color: var(--tekst); background: var(--achtergrond); font-size: 17px; line-height: 1.4; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 18px 18px 40px; }
+  h1, h2, h3 { font-family: var(--kop); color: var(--ink); margin: 0 0 .4em; }
+  h1 { font-size: 1.7rem; } h2 { font-size: 1.3rem; } h3 { font-size: 1.05rem; }
+  button { font: inherit; cursor: pointer; border-radius: 10px; border: 0; }
+  .knop { background: var(--teal); color: #fff; padding: .65em 1.2em; font-weight: 700; }
+  .knop:hover { filter: brightness(1.08); }
+  .knop.tweede { background: var(--wit); color: var(--ink); border: 2px solid var(--lijn); }
+  .knop.koraal { background: var(--koraal); }
+  .knop:disabled { opacity: .45; cursor: default; filter: none; }
+  .klein { font-size: .85rem; color: var(--grijs); }
+  .rij { display: flex; gap: .6em; flex-wrap: wrap; align-items: center; }
+  .kaart { background: var(--wit); border-radius: 14px; padding: 16px 18px; box-shadow: 0 1px 3px rgba(20,64,74,.08); }
+  /* kop */
+  .kopbalk { display: flex; justify-content: space-between; align-items: center; gap: 1em; flex-wrap: wrap; margin-bottom: 12px; }
+  .label { display: inline-block; padding: .15em .6em; border-radius: 99px; font-size: .8rem; font-weight: 700; background: var(--ink); color: #fff; }
+  .label.licht { background: var(--teal-licht); color: var(--ink); }
+  .voortgang { min-width: 220px; flex: 1; max-width: 360px; }
+  .balk { height: 10px; background: var(--teal-mid); border-radius: 99px; overflow: hidden; }
+  .balk > div { height: 100%; background: var(--teal); transition: width .4s; }
+  /* startscherm */
+  .raster { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin: 12px 0 18px; }
+  .tegel { background: var(--wit); border-radius: 12px; padding: 10px 12px; border: 2px solid transparent; }
+  .tegel.beheerst { border-color: var(--teal); background: var(--teal-licht); }
+  .tegel .titel { font-weight: 700; font-size: .95rem; color: var(--ink); }
+  .stippen { margin-top: 6px; display: flex; gap: 4px; align-items: center; }
+  .stip { width: 12px; height: 12px; border-radius: 50%; background: var(--lijn); }
+  .stip.aan { background: var(--teal); }
+  .uitleg li { margin: .25em 0; }
+  .niveaukeuze { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+  .niveaukeuze button { flex: 1; min-width: 180px; padding: 1em; font-size: 1.1rem; }
+  /* puzzel */
+  .context { background: var(--teal-licht); border-radius: 12px; padding: 12px 14px; margin-bottom: 12px; }
+  .stapinfo { font-size: .9rem; color: var(--ink); font-weight: 700; }
+  .speelveld { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  @media (min-width: 820px) { .speelveld { grid-template-columns: 1.15fr 1fr; } }
+  .vast { background: var(--ink); color: #fff; border-radius: 10px; padding: 10px 12px; font-weight: 700; }
+  .vast small { display: block; font-weight: 400; opacity: .8; font-size: .75rem; text-transform: uppercase; letter-spacing: .04em; }
+  .pijl { text-align: center; color: var(--grijs); line-height: 1; margin: 3px 0; }
+  .keten { display: flex; flex-direction: column; }
+  .slot { border: 2px dashed var(--lijn); border-radius: 10px; padding: 12px; color: var(--grijs); text-align: center; font-size: .9rem; }
+  .schakel { display: grid; grid-template-columns: 28px 1fr auto; gap: 8px; align-items: start; background: var(--wit); border: 2px solid var(--lijn); border-radius: 10px; padding: 8px 8px 8px 10px; }
+  .schakel.goed { border-color: var(--groen); background: #EAF5EE; }
+  .schakel.fout { border-color: var(--koraal); background: var(--koraal-licht); }
+  .nr { width: 26px; height: 26px; border-radius: 50%; background: var(--teal); color: #fff; font-weight: 700; font-size: .85rem; display: grid; place-items: center; }
+  .bedien { display: flex; gap: 3px; }
+  .bedien button { width: 32px; height: 32px; background: var(--achtergrond); color: var(--ink); border: 1px solid var(--lijn); border-radius: 8px; font-size: 1rem; line-height: 1; }
+  .bedien button:disabled { opacity: .3; }
+  select.niv { margin-top: 6px; font: inherit; font-size: .9rem; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--lijn); }
+  select.niv.fout { border-color: var(--koraal); background: var(--koraal-licht); }
+  select.niv.goed { border-color: var(--groen); background: #EAF5EE; }
+  .pool { display: flex; flex-direction: column; gap: 8px; }
+  .pool button { text-align: left; background: var(--wit); border: 2px solid var(--lijn); padding: 10px 12px; color: var(--tekst); }
+  .pool button:hover { border-color: var(--teal); }
+  .pool .leeg { color: var(--grijs); font-size: .9rem; }
+  .melding { border-radius: 10px; padding: 10px 14px; margin-top: 12px; }
+  .melding.info { background: var(--teal-licht); }
+  .melding.let { background: var(--koraal-licht); }
+  .melding.top { background: #EAF5EE; border: 2px solid var(--groen); }
+  .waarom { margin-top: 8px; }
+  .waarom details { background: var(--wit); border-radius: 8px; padding: 8px 10px; margin-top: 6px; border: 1px solid var(--lijn); }
+  .waarom summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+  .uitwerking ol { padding-left: 1.3em; } .uitwerking li { margin: .35em 0; }
+  .code { font-family: Consolas, "Courier New", monospace; background: var(--wit); border: 2px dashed var(--teal); padding: 8px 12px; border-radius: 8px; display: inline-block; user-select: all; }
+  .tabel { width: 100%; border-collapse: collapse; margin: 8px 0; }
+  .tabel td { padding: 6px 8px; border-bottom: 1px solid var(--lijn); }
+  .omhoog { color: var(--groen); font-weight: 700; }
+  .verborgen { display: none !important; }
+  .klein-knop { padding: .3em .8em; font-size: .9rem; }
+  .menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+  .menukaart p { margin: .5em 0 .8em; }
+  /* systeemdiagram */
+  .sysdiag { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+  .ext { align-self: center; text-align: center; width: min(320px, 100%); }
+  .ext-label { font-weight: 700; color: var(--koraal); font-size: .85rem; }
+  .ext-pijl { color: var(--koraal); font-size: 1.6rem; line-height: 1; }
+  .ext select { border: 2px dashed var(--koraal); }
+  .sysmid { display: grid; grid-template-columns: 1.25fr 2fr 1.25fr; gap: 12px; align-items: center; }
+  @media (max-width: 760px) { .sysmid { grid-template-columns: 1fr; } }
+  .grens { border: 4px solid var(--ink); border-radius: 24px; padding: 12px 14px; background: #F3F6F6; }
+  .grens-kop { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; color: var(--ink); }
+  .deelgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px; margin-top: 4px; }
+  .io { display: flex; flex-direction: column; gap: 6px; }
+  .io-label { font-weight: 700; color: var(--groen); font-size: .9rem; }
+  .io.output .io-label { text-align: right; }
+  .vakkeuze { width: 100%; font: inherit; font-size: .9rem; padding: 7px 8px; border-radius: 8px; border: 2px solid var(--lijn); background: #fff; color: var(--tekst); }
+  .grens .vakkeuze { border-color: #8FA3A8; }
+  .io .vakkeuze { border-color: var(--groen); }
+  .vakkeuze.goed { border-color: var(--groen) !important; background: #EAF5EE; }
+  .vakkeuze.fout { border-color: var(--koraal) !important; background: var(--koraal-licht); }
+  .vakkeuze:disabled { opacity: 1; color: var(--tekst); }
+  .vraagkaart { margin-top: 12px; border: 2px solid var(--teal-mid); }
+  .opties { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+  .optie { width: 100%; text-align: left; background: #fff; border: 2px solid var(--lijn); padding: 10px 12px; color: var(--tekst); }
+  .optie:hover:not(:disabled) { border-color: var(--teal); }
+  .optie.goed { border-color: var(--groen); background: #EAF5EE; }
+  .optie.fout { border-color: var(--koraal); background: var(--koraal-licht); }
+  .optie:disabled { cursor: default; color: var(--tekst); }
+  .optie-uitleg { font-size: .92rem; padding: 4px 12px 2px; color: #8A2E14; }
+  .optie-uitleg.goed { color: #1F5E36; }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<!-- ============ OEFENSTOF (hier kun je ketens en diagrammen aanpassen of toevoegen) ============ -->
+<script>
+/* Oefenstof try-out 1 — afweer (ET16), reproductie virussen en bacteriën (ET12), thermoregulatie (ET18)
+   Elke keten: schakels in vaste volgorde (géén verwisselbare stappen), afleiders met uitleg.
+   niv = geaccepteerde organisatieniveaus (alleen gebruikt bij vwo, stap 3).
+   Nieuwe stof (bijv. try-out 2) = een nieuw bestand met dezelfde opbouw, toevoegen in index.html. */
+window.OEFENSETS = window.OEFENSETS || [];
+window.OEFENSETS.push({
+  id: "tryout1",
+  titel: "Afweer, virussen en bacteriën, thermoregulatie",
+  ketens: [
+    // ======================= HAVO =======================
+    {
+      id: "h-bmr", niveau: "havo", titel: "Beschermd door de BMR-prik", eindterm: "ET16.2/16.3", denkwijze: "C21",
+      context: "Een kind krijgt het BMR-vaccin. Jaren later komt het in contact met het mazelenvirus, maar het wordt niet ziek.",
+      begin: "Het kind krijgt het BMR-vaccin met verzwakt mazelenvirus.",
+      eind: "Het kind wordt niet ziek van mazelen.",
+      schakels: [
+        { t: "Macrofagen nemen het verzwakte virus op en presenteren de antigenen aan T-helpercellen." },
+        { t: "T-helpercellen activeren B-cellen die bij het antigeen passen." },
+        { t: "De B-cellen delen en worden plasmacellen en B-geheugencellen." },
+        { t: "Bij contact met echt mazelenvirus herkennen de geheugencellen het antigeen meteen." },
+        { t: "Er ontstaan snel veel plasmacellen die veel antistoffen maken." },
+      ],
+      afleiders: [
+        { t: "Het vaccin bevat antistoffen tegen mazelen.", waarom: "Dat zou passieve immunisatie zijn. Het BMR-vaccin bevat verzwakt virus: je lichaam maakt zelf antistoffen en geheugencellen (actieve immunisatie)." },
+        { t: "Macrofagen maken antistoffen tegen het mazelenvirus.", waarom: "Antistoffen worden gemaakt door plasmacellen. Macrofagen nemen ziekteverwekkers op en presenteren antigenen." },
+        { t: "Geheugencellen ontstaan pas bij het eerste contact met echt mazelenvirus.", waarom: "Geheugencellen ontstaan al na de vaccinatie. Daardoor is de reactie bij echt contact meteen snel en sterk." },
+      ],
+      hint: "Volg de route: opnemen en presenteren → activeren → delen → herkennen bij het tweede contact.",
+    },
+    {
+      id: "h-waterpokken", niveau: "havo", titel: "Waterpokken krijg je maar één keer", eindterm: "ET16.2", denkwijze: "C21",
+      context: "Wie waterpokken heeft gehad, wordt daar meestal niet nog een keer ziek van.",
+      begin: "Het waterpokkenvirus komt voor het eerst het lichaam binnen.",
+      eind: "Bij een nieuwe besmetting wordt het kind niet ziek.",
+      schakels: [
+        { t: "Macrofagen nemen het virus op en presenteren de antigenen aan T-helpercellen." },
+        { t: "T-helpercellen activeren passende B-cellen en cytotoxische T-cellen." },
+        { t: "Er ontstaan plasmacellen, die antistoffen maken, en geheugencellen." },
+        { t: "Bij een nieuwe besmetting herkennen de geheugencellen het antigeen meteen." },
+        { t: "De secundaire reactie is sneller en sterker dan de eerste." },
+      ],
+      afleiders: [
+        { t: "Bij de eerste besmetting zijn er direct grote hoeveelheden antistoffen.", waarom: "De primaire reactie komt juist traag op gang. Daarom word je de eerste keer wel ziek." },
+        { t: "Het virus kan het lichaam een tweede keer niet meer binnendringen.", waarom: "Het virus kan wel binnenkomen, maar wordt dan snel opgeruimd door de secundaire reactie." },
+        { t: "De antistoffen van de eerste keer blijven levenslang in grote hoeveelheden in het bloed.", waarom: "De hoeveelheid antistoffen daalt na de infectie. De bescherming komt vooral van geheugencellen." },
+      ],
+      hint: "Wat gebeurt er bij de eerste besmetting, en wat blijft er daarna over?",
+    },
+    {
+      id: "h-hepb", niveau: "havo", titel: "Een vaccin zonder virus", eindterm: "ET16.2/16.3", denkwijze: "C21",
+      context: "Het hepatitis B-vaccin bevat geen virus, maar alleen een eiwit van de buitenkant van het virus. Toch beschermt het tegen hepatitis B.",
+      begin: "Een eiwit van het hepatitis B-virus wordt ingespoten.",
+      eind: "De gevaccineerde wordt niet ziek van hepatitis B.",
+      schakels: [
+        { t: "Macrofagen nemen het eiwit op en presenteren het als antigeen aan T-helpercellen." },
+        { t: "T-helpercellen activeren B-cellen die bij dit antigeen passen." },
+        { t: "Er ontstaan plasmacellen en B-geheugencellen." },
+        { t: "Bij een besmetting herkennen de geheugencellen hetzelfde antigeen op het virus." },
+        { t: "Er komt snel een sterke reactie met veel antistoffen." },
+      ],
+      afleiders: [
+        { t: "Het eiwit vermenigvuldigt zich in het lichaam en veroorzaakt een milde ziekte.", waarom: "Een los eiwit kan zich niet vermenigvuldigen. Daarom kun je van dit vaccin niet ziek worden." },
+        { t: "Het eiwit wordt direct onschadelijk gemaakt door antistoffen uit het vaccin.", waarom: "Het vaccin bevat geen antistoffen. Het lichaam maakt ze zelf: actieve immunisatie." },
+        { t: "T-helpercellen maken antistoffen tegen het eiwit.", waarom: "Antistoffen komen van plasmacellen. T-helpercellen activeren B-cellen." },
+      ],
+      hint: "Voor het afweersysteem maakt het niet uit of het antigeen op een virus zit of los wordt ingespoten.",
+    },
+    {
+      id: "h-tetanus", niveau: "havo", titel: "Een prik met antistoffen", eindterm: "ET16.3", denkwijze: "C21",
+      context: "Iemand die niet gevaccineerd is, loopt een diepe, vuile wond op. De tetanusbacterie kan een gif maken. De arts geeft een injectie met antistoffen tegen dat gif.",
+      begin: "De patiënt krijgt antistoffen tegen het tetanusgif ingespoten.",
+      eind: "De patiënt is direct beschermd, maar niet blijvend.",
+      schakels: [
+        { t: "De ingespoten antistoffen binden aan het tetanusgif." },
+        { t: "Het gebonden gif kan geen schade meer aanrichten." },
+        { t: "De ingespoten antistoffen worden na enkele weken afgebroken." },
+        { t: "Er zijn geen geheugencellen gevormd, dus de bescherming verdwijnt." },
+      ],
+      afleiders: [
+        { t: "Plasmacellen van de patiënt maken de antistoffen tegen het gif.", waarom: "De antistoffen zijn ingespoten: passieve immunisatie. Het eigen afweersysteem hoeft ze niet te maken." },
+        { t: "De antistoffen binden aan de tetanusbacteriën en doden ze.", waarom: "Deze antistoffen zijn gericht tegen het gif, niet tegen de bacterie." },
+        { t: "Er ontstaan B-geheugencellen tegen het tetanusgif.", waarom: "Bij passieve immunisatie wordt het eigen afweersysteem niet geactiveerd, dus ontstaan er geen geheugencellen." },
+      ],
+      hint: "Is dit actieve of passieve immunisatie? Wat betekent dat voor geheugencellen?",
+    },
+    {
+      id: "h-splinter", niveau: "havo", titel: "Een splinter in je vinger", eindterm: "ET16.1", denkwijze: "C21",
+      context: "Je krijgt een splinter in je vinger. Een dag later is de plek rood, warm en een beetje dik.",
+      begin: "Met de splinter komen bacteriën onder de huid.",
+      eind: "De bacteriën worden opgeruimd.",
+      schakels: [
+        { t: "Macrofagen herkennen de bacteriën als lichaamsvreemd en geven signaalstoffen af." },
+        { t: "De bloedvaten ter plekke verwijden: de plek wordt rood en warm." },
+        { t: "Met het extra bloed komen meer afweercellen naar de plek." },
+        { t: "De afweercellen nemen de bacteriën op en breken ze af." },
+      ],
+      afleiders: [
+        { t: "Plasmacellen maken binnen een paar uur antistoffen tegen de bacteriën.", waarom: "De verworven afweer komt pas na dagen op gang. Deze snelle reactie hoort bij de aangeboren afweer." },
+        { t: "De bloedvaten vernauwen, zodat de bacteriën zich niet kunnen verspreiden.", waarom: "Bij een ontsteking verwijden de bloedvaten juist. Daardoor wordt de plek rood en warm." },
+        { t: "De huid sluit de wond, waardoor de bacteriën doodgaan.", waarom: "Een gesloten wond houdt nieuwe indringers tegen, maar ruimt de bacteriën die al binnen zijn niet op." },
+      ],
+      hint: "Dit is aangeboren afweer: snel en niet-specifiek. Waar komen rood en warm vandaan?",
+    },
+    {
+      id: "h-koorts", niveau: "havo", titel: "Rillen terwijl je koorts krijgt", eindterm: "ET16.1/18.3", denkwijze: "C26",
+      context: "Bij griep krijgt iemand koorts. In het begin heeft hij het koud en rilt hij.",
+      begin: "Het griepvirus vermenigvuldigt zich in het lichaam.",
+      eind: "De lichaamstemperatuur stijgt naar ongeveer 39 °C.",
+      schakels: [
+        { t: "Macrofagen herkennen het virus en geven signaalstoffen af aan het bloed." },
+        { t: "De hypothalamus zet de normwaarde voor de temperatuur hoger." },
+        { t: "De lichaamstemperatuur is nu lager dan de normwaarde: het lichaam reageert alsof het te koud is." },
+        { t: "Bloedvaten in de huid vernauwen en de spieren gaan rillen." },
+      ],
+      afleiders: [
+        { t: "Het virus maakt warmte, waardoor de temperatuur stijgt.", waarom: "De warmte komt van het lichaam zelf: de hypothalamus verhoogt de normwaarde." },
+        { t: "De zweetklieren gaan zweet maken.", waarom: "Zweten hoort bij afkoelen. Aan het begin van koorts wordt het lichaam juist warmer." },
+        { t: "De hypothalamus valt uit, waardoor de temperatuur niet meer geregeld wordt.", waarom: "De regelkring werkt gewoon, maar rond een hogere normwaarde: een nieuw evenwicht." },
+      ],
+      hint: "Koorts is geen kapotte thermostaat. Wat verandert er aan de normwaarde?",
+    },
+    {
+      id: "h-kou", niveau: "havo", titel: "Wachten op de bus zonder jas", eindterm: "ET18.3", denkwijze: "C26",
+      context: "Je wacht in de winter op de bus zonder jas. Je lichaamstemperatuur blijft toch ongeveer gelijk.",
+      begin: "De huid koelt af.",
+      eind: "De lichaamstemperatuur blijft ongeveer gelijk.",
+      schakels: [
+        { t: "Temperatuurzintuigen in de huid geven impulsen door naar de hypothalamus." },
+        { t: "De hypothalamus stuurt impulsen via het orthosympathisch zenuwstelsel." },
+        { t: "De bloedvaten in de huid vernauwen." },
+        { t: "Er gaat minder warm bloed naar de huid, dus het lichaam geeft minder warmte af." },
+      ],
+      afleiders: [
+        { t: "De zweetklieren worden actiever.", waarom: "Zweten koelt af. Dat is bij kou juist ongewenst." },
+        { t: "De bloedvaten in de huid verwijden, zodat de huid warm wordt.", waarom: "Verwijden geeft meer warmteverlies. Bij kou vernauwen de vaten." },
+        { t: "Het parasympathisch zenuwstelsel laat de bloedvaten vernauwen.", waarom: "Vaatvernauwing in de huid wordt geregeld door het orthosympathisch zenuwstelsel." },
+      ],
+      hint: "Regelkring: sensor → regelcentrum → effector → effect. Wat werkt de afkoeling tegen?",
+    },
+    {
+      id: "h-fietsen", niveau: "havo", titel: "Hard fietsen tegen de wind in", eindterm: "ET18.3", denkwijze: "C26",
+      context: "Je fietst hard tegen de wind in naar school en krijgt het warm.",
+      begin: "De spieren werken hard en produceren veel warmte.",
+      eind: "De lichaamstemperatuur daalt weer naar de normwaarde.",
+      schakels: [
+        { t: "De bloedtemperatuur stijgt en de hypothalamus registreert dat." },
+        { t: "De hypothalamus stuurt impulsen via het orthosympathisch zenuwstelsel naar de zweetklieren." },
+        { t: "De zweetklieren maken zweet." },
+        { t: "Het zweet verdampt op de huid en neemt daarbij warmte op." },
+      ],
+      afleiders: [
+        { t: "De spieren gaan rillen om warmte af te voeren.", waarom: "Rillen produceert juist warmte." },
+        { t: "De bloedvaten in de huid vernauwen.", waarom: "Als je het te warm hebt, verwijden de vaten in de huid juist, zodat je meer warmte afgeeft." },
+        { t: "De hypothalamus verlaagt de normwaarde.", waarom: "De normwaarde blijft gelijk. De werkelijke temperatuur wijkt af en wordt teruggebracht: negatieve terugkoppeling." },
+      ],
+      hint: "Welke effector voert warmte af? Wat gebeurt er met zweet op je huid?",
+    },
+    {
+      id: "h-resistent", niveau: "havo", titel: "Steeds meer resistente bacteriën", eindterm: "ET12/15", denkwijze: "C27",
+      context: "In een ziekenhuis komen steeds vaker bacteriën voor die ongevoelig zijn voor een veelgebruikt antibioticum.",
+      begin: "Bij het delen van bacteriën ontstaan soms mutaties.",
+      eind: "De bacteriepopulatie bestaat grotendeels uit resistente bacteriën.",
+      schakels: [
+        { t: "Door een mutatie is een enkele bacterie ongevoelig voor het antibioticum." },
+        { t: "Het antibioticum doodt de gevoelige bacteriën." },
+        { t: "De resistente bacteriën overleven en delen." },
+        { t: "Hun dochtercellen krijgen het resistente allel ook." },
+      ],
+      afleiders: [
+        { t: "Door het antibioticum worden de bacteriën resistent.", waarom: "Het antibioticum veroorzaakt de mutatie niet. Het selecteert bacteriën die al resistent waren." },
+        { t: "De bacteriën wennen langzaam aan het antibioticum.", waarom: "Een bacterie past zich niet aan tijdens haar leven. Het gaat om variatie die er al is, en selectie." },
+        { t: "Resistente bacteriën delen sneller omdat ze resistent zijn.", waarom: "Resistentie maakt ze niet sneller. Ze hebben alleen geen concurrentie meer, omdat de gevoelige bacteriën dood zijn." },
+      ],
+      hint: "Evolutionair redeneren: variatie → selectiedruk → voortplanting → populatie verandert.",
+    },
+    {
+      id: "h-verkoudheid", niveau: "havo", titel: "Een verkoudheidsvirus vermenigvuldigt zich", eindterm: "ET12", denkwijze: "C21",
+      context: "Een verkoudheidsvirus komt in je neus terecht. Een paar dagen later zitten er miljoenen virusdeeltjes.",
+      begin: "Een virusdeeltje hecht aan een cel van het neusslijmvlies.",
+      eind: "Steeds meer cellen in het slijmvlies zijn geïnfecteerd.",
+      schakels: [
+        { t: "Het virus brengt zijn erfelijk materiaal in de cel." },
+        { t: "De cel maakt met dat erfelijk materiaal nieuwe virusonderdelen." },
+        { t: "Er worden nieuwe virusdeeltjes gevormd." },
+        { t: "De virusdeeltjes komen vrij uit de cel." },
+        { t: "De nieuwe virusdeeltjes infecteren naburige cellen." },
+      ],
+      afleiders: [
+        { t: "Het virus deelt zich in tweeën, net als een bacterie.", waarom: "Een virus kan zich niet zelf delen. Het laat de gastheercel nieuwe virusdeeltjes maken." },
+        { t: "Het virus maakt met zijn eigen ribosomen viruseiwitten.", waarom: "Een virus heeft geen ribosomen. Het gebruikt die van de gastheercel." },
+        { t: "De cel deelt zich en geeft elke dochtercel de helft van het virus.", waarom: "Het virus vermenigvuldigt zich doordat de cel nieuwe virusdeeltjes maakt, niet via celdeling." },
+      ],
+      hint: "Een virus heeft geen eigen stofwisseling. Wie doet het werk?",
+    },
+
+    // ======================= VWO =======================
+    {
+      id: "v-bmr", niveau: "vwo", titel: "Beschermd door de BMR-prik", eindterm: "ET16.1/16.2", denkwijze: "C21",
+      context: "Een kind krijgt het BMR-vaccin. Jaren later komt het in contact met het mazelenvirus, maar het wordt niet ziek.",
+      begin: "Het kind krijgt het BMR-vaccin met verzwakt mazelenvirus.",
+      eind: "Het kind wordt niet ziek van mazelen.",
+      schakels: [
+        { t: "Dendritische cellen nemen het verzwakte virus op en breken het af.", niv: ["cel"] },
+        { t: "Antigeenfragmenten worden op MHC-II aan het celmembraan gepresenteerd.", niv: ["molecuul"] },
+        { t: "De dendritische cel gaat via de lymfe naar een lymfeknoop.", niv: ["orgaan"] },
+        { t: "Een T-helpercel met een passende receptor bindt aan het antigeen op MHC-II.", niv: ["molecuul", "cel"] },
+        { t: "De T-helpercel activeert met cytokinen passende B-cellen: er ontstaan plasmacellen en geheugencellen.", niv: ["cel"] },
+        { t: "Bij contact met mazelenvirus zorgen geheugencellen voor een snelle, sterke secundaire reactie.", niv: ["organisme", "cel"] },
+      ],
+      afleiders: [
+        { t: "Antigeenfragmenten worden op MHC-I aan T-helpercellen gepresenteerd.", waarom: "Aan T-helpercellen wordt gepresenteerd via MHC-II. Via MHC-I presenteren cellen aan cytotoxische T-cellen." },
+        { t: "Dendritische cellen geven cytokinen af die het virus direct doden.", waarom: "Cytokinen zijn signaalstoffen tussen afweercellen. Ze doden geen virussen." },
+        { t: "Antistoffen doden het mazelenvirus.", waarom: "Antistoffen binden aan het antigeen. Daarna ruimen macrofagen het complex op." },
+      ],
+      hint: "Presentatie (MHC-II) → plaats van activatie (lymfeknoop) → activatie (cytokinen) → geheugen.",
+    },
+    {
+      id: "v-tc", niveau: "vwo", titel: "Een geïnfecteerde cel opruimen", eindterm: "ET16.2", denkwijze: "C21",
+      context: "Een griepvirus infecteert cellen in de luchtwegen. Antistoffen kunnen het virus binnen in een cel niet bereiken. Er zijn al geactiveerde cytotoxische T-cellen tegen dit virus.",
+      begin: "Het virus vermenigvuldigt zich in een cel van de luchtwegen.",
+      eind: "Vanuit deze cel kan het virus zich niet meer verspreiden.",
+      schakels: [
+        { t: "De cel maakt viruseiwitten.", niv: ["cel", "molecuul"] },
+        { t: "Fragmenten van viruseiwitten worden op MHC-I aan de buitenkant van de cel gepresenteerd.", niv: ["molecuul"] },
+        { t: "Een cytotoxische T-cel met een passende receptor bindt aan het antigeen op MHC-I.", niv: ["molecuul", "cel"] },
+        { t: "De cytotoxische T-cel doodt de geïnfecteerde cel.", niv: ["cel"] },
+      ],
+      afleiders: [
+        { t: "Antistoffen dringen de cel binnen en binden aan het virus.", waarom: "Antistoffen werken buiten cellen. Virus binnen in een cel is voor hen onbereikbaar." },
+        { t: "De fragmenten worden op MHC-II aan de cytotoxische T-cel gepresenteerd.", waarom: "Een gewone lichaamscel presenteert via MHC-I aan cytotoxische T-cellen." },
+        { t: "De geïnfecteerde cel maakt antistoffen tegen het virus.", waarom: "Alleen plasmacellen maken antistoffen." },
+      ],
+      hint: "Welk MHC-molecuul heeft elke lichaamscel, en welke T-cel kijkt daarnaar?",
+    },
+    {
+      id: "v-hepb", niveau: "vwo", titel: "Een vaccin zonder virus", eindterm: "ET16.1/16.2", denkwijze: "C21",
+      context: "Het hepatitis B-vaccin bevat geen virus, maar alleen een eiwit van de buitenkant van het virus. Toch beschermt het tegen hepatitis B.",
+      begin: "Een eiwit van het hepatitis B-virus wordt ingespoten.",
+      eind: "De gevaccineerde wordt niet ziek van hepatitis B.",
+      schakels: [
+        { t: "Dendritische cellen nemen het eiwit op en presenteren fragmenten op MHC-II.", niv: ["cel", "molecuul"] },
+        { t: "In een lymfeknoop bindt een passende T-helpercel aan het antigeen op MHC-II.", niv: ["orgaan", "cel", "molecuul"] },
+        { t: "De T-helpercel activeert met cytokinen B-cellen die het viruseiwit binden.", niv: ["cel"] },
+        { t: "Deze B-cellen delen en vormen plasmacellen en B-geheugencellen.", niv: ["cel"] },
+        { t: "Bij besmetting maken veel plasmacellen snel antistoffen die het virus binden.", niv: ["organisme", "cel"] },
+      ],
+      afleiders: [
+        { t: "Het viruseiwit wordt in de lymfeknoop vermenigvuldigd.", waarom: "Een los eiwit kan zich niet vermenigvuldigen. Daarom kun je van dit vaccin niet ziek worden." },
+        { t: "De B-cel presenteert het eiwit op MHC-I aan de T-helpercel.", waarom: "Aan T-helpercellen wordt gepresenteerd via MHC-II." },
+        { t: "Cytokinen binden aan het viruseiwit en maken het onschadelijk.", waarom: "Cytokinen zijn signaalstoffen tussen afweercellen. Antistoffen binden het antigeen." },
+      ],
+      hint: "Dezelfde route als bij een verzwakt virus: het afweersysteem reageert op het antigeen.",
+    },
+    {
+      id: "v-placenta", niveau: "vwo", titel: "Beschermd door antistoffen van de moeder", eindterm: "ET16.3", denkwijze: "C21",
+      context: "Een pasgeborene is de eerste maanden beschermd tegen mazelen als de moeder daar immuun voor is. Toch moet het kind later gevaccineerd worden.",
+      begin: "De moeder heeft antistoffen tegen mazelen in haar bloed.",
+      eind: "Het kind moet later toch gevaccineerd worden.",
+      schakels: [
+        { t: "Antistoffen uit het bloed van de moeder gaan via de placenta naar het kind.", niv: ["orgaan"] },
+        { t: "In het bloed van het kind binden deze antistoffen aan antigenen van mazelenvirus.", niv: ["molecuul"] },
+        { t: "Macrofagen ruimen het gebonden virus op.", niv: ["cel"] },
+        { t: "In de eerste maanden na de geboorte worden de antistoffen van de moeder afgebroken.", niv: ["molecuul", "organisme"] },
+        { t: "Het kind heeft geen eigen geheugencellen gevormd, dus de bescherming verdwijnt.", niv: ["organisme", "cel"] },
+      ],
+      afleiders: [
+        { t: "Geheugencellen van de moeder gaan via de placenta naar het kind.", waarom: "Via de placenta gaan antistoffen, geen geheugencellen." },
+        { t: "Het kind wordt hierdoor actief immuun.", waarom: "Het kind krijgt kant-en-klare antistoffen: passieve immunisatie. Het eigen afweersysteem reageert niet." },
+        { t: "Plasmacellen van het kind maken deze antistoffen.", waarom: "De antistoffen komen van de moeder." },
+      ],
+      hint: "Actief of passief? Wat ontbreekt er dan voor blijvende bescherming?",
+    },
+    {
+      id: "v-koorts", niveau: "vwo", titel: "Rillen terwijl je koorts krijgt", eindterm: "ET16.1/18.3", denkwijze: "C26",
+      context: "Bij griep krijgt iemand koorts. In het begin heeft hij het koud en rilt hij.",
+      begin: "Het griepvirus vermenigvuldigt zich in het lichaam.",
+      eind: "De lichaamstemperatuur stijgt tot een nieuw evenwicht rond 39 °C.",
+      schakels: [
+        { t: "Macrofagen herkennen het virus en geven cytokinen af.", niv: ["cel"] },
+        { t: "Via het bloed bereiken de cytokinen de hypothalamus.", niv: ["orgaan", "organisme", "molecuul"] },
+        { t: "De hypothalamus verhoogt de normwaarde voor de lichaamstemperatuur.", niv: ["orgaan"] },
+        { t: "Via het orthosympathisch zenuwstelsel vernauwen de huidvaten; via motorische zenuwen gaan spieren rillen.", niv: ["orgaan", "weefsel", "organisme"] },
+      ],
+      afleiders: [
+        { t: "De cytokinen verlagen de normwaarde in de hypothalamus.", waarom: "Bij koorts wordt de normwaarde juist verhoogd." },
+        { t: "De zweetklieren (exocriene klieren) worden geactiveerd.", waarom: "Zweten hoort bij afkoelen. Dat komt pas als de koorts zakt." },
+        { t: "Het virus produceert warmte.", waarom: "De warmte komt van het lichaam zelf, door de hogere normwaarde." },
+      ],
+      hint: "Signaal (cytokinen) → regelcentrum → nieuwe normwaarde → effectoren.",
+    },
+    {
+      id: "v-zweten", niveau: "vwo", titel: "Zweten tijdens een wedstrijd", eindterm: "ET18.3", denkwijze: "C26",
+      context: "Tijdens een hardloopwedstrijd stijgt de bloedtemperatuur. Het lichaam voert de extra warmte af.",
+      begin: "De bloedtemperatuur stijgt.",
+      eind: "De lichaamstemperatuur daalt naar de normwaarde.",
+      schakels: [
+        { t: "Temperatuurgevoelige neuronen in de hypothalamus registreren de hogere bloedtemperatuur.", niv: ["cel"] },
+        { t: "De hypothalamus stuurt impulsen via orthosympathische neuronen naar de zweetklieren.", niv: ["orgaan", "cel"] },
+        { t: "Neurotransmitter bindt aan receptoren van cellen in de zweetklieren.", niv: ["molecuul"] },
+        { t: "De zweetklieren (exocriene klieren) geven zweet af aan het huidoppervlak.", niv: ["orgaan", "weefsel"] },
+        { t: "Het verdampende zweet neemt warmte op van de huid.", niv: ["orgaan", "organisme"] },
+      ],
+      afleiders: [
+        { t: "De zweetklieren geven zweet af aan het bloed.", waarom: "Exocriene klieren geven hun product af via een afvoerbuis naar buiten, niet aan het bloed. Dat doen endocriene klieren." },
+        { t: "Het parasympathisch zenuwstelsel stimuleert de zweetklieren.", waarom: "Zweetklieren worden aangestuurd door het orthosympathisch zenuwstelsel." },
+        { t: "De bloedvaten in de huid vernauwen om warmte kwijt te raken.", waarom: "Vernauwen houdt warmte vast. Om warmte kwijt te raken verwijden de huidvaten." },
+      ],
+      hint: "Van sensor tot effect, en tussendoor één stap op molecuulniveau: hoe komt het signaal bij de kliercel?",
+    },
+    {
+      id: "v-ribosoom", niveau: "vwo", titel: "Een antibioticum op de ribosomen", eindterm: "ET12", denkwijze: "C23",
+      context: "Een patiënt met een bacteriële longontsteking krijgt een antibioticum dat aan de ribosomen van bacteriën bindt.",
+      begin: "Het antibioticum bindt aan de ribosomen van de bacterie.",
+      eind: "De patiënt herstelt.",
+      schakels: [
+        { t: "De bacterie kan geen eiwitten meer maken.", niv: ["molecuul", "cel"] },
+        { t: "De bacterie groeit niet en deelt niet meer.", niv: ["cel"] },
+        { t: "De bacteriepopulatie in de longen neemt niet meer toe.", niv: ["populatie"] },
+        { t: "Het afweersysteem ruimt de overgebleven bacteriën op.", niv: ["organisme", "orgaan"] },
+      ],
+      afleiders: [
+        { t: "Het antibioticum remt ook de eiwitsynthese in de longcellen van de patiënt.", waarom: "Bacteriële ribosomen zijn anders gebouwd dan die van de mens. Daardoor werkt het antibioticum selectief." },
+        { t: "Het antibioticum activeert de T-helpercellen.", waarom: "Het antibioticum werkt op de bacterie, niet op het afweersysteem." },
+        { t: "De bacterie wordt resistent doordat het antibioticum aan de ribosomen bindt.", waarom: "Resistentie ontstaat door mutaties die er al zijn. Het antibioticum selecteert, maar veroorzaakt ze niet." },
+      ],
+      hint: "Volg het effect van niveau naar niveau: molecuul → cel → populatie → organisme.",
+    },
+    {
+      id: "v-resistent", niveau: "vwo", titel: "Steeds meer resistente bacteriën", eindterm: "ET12/15", denkwijze: "C27",
+      context: "In een ziekenhuis komen steeds vaker bacteriën voor die ongevoelig zijn voor een veelgebruikt antibioticum.",
+      begin: "Een populatie bacteriën deelt zich snel.",
+      eind: "Het antibioticum werkt niet meer tegen deze populatie.",
+      schakels: [
+        { t: "Bij DNA-replicatie ontstaat in één bacterie een mutatie die resistentie geeft.", niv: ["molecuul"] },
+        { t: "Het antibioticum doodt de gevoelige bacteriën.", niv: ["cel"] },
+        { t: "De resistente bacterie overleeft en deelt door tweedeling.", niv: ["cel"] },
+        { t: "Het aandeel resistente bacteriën in de populatie neemt toe.", niv: ["populatie"] },
+      ],
+      afleiders: [
+        { t: "Door het antibioticum muteert het DNA van de bacteriën.", waarom: "Het antibioticum veroorzaakt de mutatie niet. Het selecteert bacteriën die al resistent waren." },
+        { t: "De bacteriën passen zich doelgericht aan het antibioticum aan.", waarom: "Evolutie heeft geen doel. Het gaat om bestaande variatie en selectie." },
+        { t: "Resistente bacteriën delen sneller omdat ze resistent zijn.", waarom: "Resistentie maakt ze niet sneller. Ze hebben alleen geen concurrentie meer van gevoelige bacteriën." },
+      ],
+      hint: "Waar ontstaat de variatie, en wat is hier de selectiedruk?",
+    },
+    {
+      id: "v-griep", niveau: "vwo", titel: "Elk jaar een nieuw griepvaccin", eindterm: "ET12/16", denkwijze: "C27",
+      context: "Elk jaar wordt een nieuw griepvaccin samengesteld, omdat het vaccin van vorig jaar minder goed beschermt.",
+      begin: "Griepvirussen vermenigvuldigen zich in miljoenen mensen.",
+      eind: "Er is elk jaar een nieuw griepvaccin nodig.",
+      schakels: [
+        { t: "Bij het kopiëren van het RNA ontstaan mutaties die niet worden hersteld.", niv: ["molecuul"] },
+        { t: "Sommige varianten hebben een veranderd oppervlakte-eiwit, zoals hemagglutinine.", niv: ["molecuul"] },
+        { t: "Antistoffen en geheugencellen van eerdere infecties herkennen deze varianten minder goed.", niv: ["cel", "molecuul", "organisme"] },
+        { t: "Deze varianten infecteren meer mensen en vermenigvuldigen zich meer.", niv: ["populatie"] },
+        { t: "De samenstelling van de viruspopulatie verandert.", niv: ["populatie"] },
+      ],
+      afleiders: [
+        { t: "Het vaccin van vorig jaar veroorzaakt de mutaties.", waarom: "Mutaties ontstaan bij het kopiëren van het RNA. Immuniteit selecteert, maar veroorzaakt ze niet." },
+        { t: "Het virus verandert zijn eiwitten bewust om antistoffen te ontwijken.", waarom: "Er is geen doel. Varianten die minder goed herkend worden, verspreiden zich gewoon beter." },
+        { t: "Geheugencellen veranderen elk jaar van receptor.", waarom: "Het virus verandert, niet de geheugencellen." },
+      ],
+      hint: "Variatie (molecuul) → selectiedruk (immuniteit) → voortplanting → populatie.",
+    },
+    {
+      id: "v-virus", niveau: "vwo", titel: "Een verkoudheidsvirus vermenigvuldigt zich", eindterm: "ET12", denkwijze: "C21",
+      context: "Een verkoudheidsvirus komt in je neus terecht. Een paar dagen later zitten er miljoenen virusdeeltjes.",
+      begin: "Een virusdeeltje komt in contact met een cel van het neusslijmvlies.",
+      eind: "Naburige cellen raken geïnfecteerd.",
+      schakels: [
+        { t: "Een eiwit op het virus bindt aan een passende receptor op het celmembraan.", niv: ["molecuul"] },
+        { t: "Het erfelijk materiaal van het virus komt de cel binnen.", niv: ["cel"] },
+        { t: "Ribosomen van de gastheercel maken viruseiwitten en het virusgenoom wordt gekopieerd.", niv: ["cel", "molecuul"] },
+        { t: "Nieuwe virusdeeltjes worden samengesteld.", niv: ["cel"] },
+        { t: "De virusdeeltjes komen vrij uit de cel.", niv: ["cel"] },
+      ],
+      afleiders: [
+        { t: "Het virus deelt zich door tweedeling.", waarom: "Een virus kan zich niet zelf delen. De gastheercel maakt nieuwe virusdeeltjes." },
+        { t: "Het virus maakt viruseiwitten met zijn eigen ribosomen.", waarom: "Een virus heeft geen ribosomen. Het gebruikt die van de gastheercel." },
+        { t: "Het virus kan elke cel binnendringen, ongeacht de receptoren.", waarom: "Alleen cellen met een passende receptor kunnen worden geïnfecteerd: structuur bepaalt functie (C25)." },
+      ],
+      hint: "Begin op molecuulniveau: waarom kan dit virus juist deze cel binnenkomen?",
+    },
+  ],
+});
+</script>
+<script>
+/* Systeemdiagrammen (C23) try-out 1. Hoort bij set "tryout1".
+   vakken: goede antwoorden per soort vak (deel = deelsystemen, input, output, extern = externe factor).
+   Volgorde binnen een soort maakt niet uit. afleiders: foute opties per soort.
+   vragen: meerkeuze; niveau "beide", "havo" of "vwo". Precies één optie goed. */
+window.OEFENSETS = window.OEFENSETS || [];
+(function () {
+  const set = window.OEFENSETS.find((s) => s.id === "tryout1");
+  set.diagrammen = [
+    {
+      id: "d-bacterie", niveaus: ["havo", "vwo"], titel: "Een bacterie en een antibioticum",
+      context: "Een bacterie leeft in de longen van een patiënt. De patiënt krijgt een antibioticum dat aan de ribosomen van bacteriën bindt.",
+      systeem: "één bacterie", niv: ["cel"],
+      vakken: { deel: ["DNA", "ribosomen", "enzymen"], input: ["voedingsstoffen"], output: ["afvalstoffen (o.a. CO₂)", "dochtercellen"], extern: ["antibioticum"] },
+      afleiders: { deel: ["celkern", "mitochondriën", "Golgi-systeem"], input: ["antistoffen", "zonlicht"], output: ["glucose", "geheugencellen"], extern: ["temperatuurzintuig", "plasmacel"] },
+      vragen: [
+        { niveau: "havo", vraag: "Het antibioticum bindt aan de ribosomen. Wat is het gevolg op het niveau van de cel?", opties: [
+          { t: "De bacterie maakt geen eiwitten meer en kan daardoor niet groeien en delen.", goed: true, waarom: "Ribosomen maken eiwitten, ook de enzymen die nodig zijn voor groei en deling." },
+          { t: "De bacterie maakt geen DNA meer, maar deelt nog wel.", waarom: "Zonder eiwitten (enzymen) kan de cel ook niet delen. Het effect op de ribosomen werkt door." },
+          { t: "De mitochondriën van de bacterie maken geen ATP meer.", waarom: "Bacteriën hebben geen mitochondriën." },
+          { t: "De ribosomen gaan antistoffen maken tegen het antibioticum.", waarom: "Bacteriën maken geen antistoffen. Dat doen plasmacellen van de patiënt." },
+        ] },
+        { niveau: "vwo", vraag: "Volg het effect naar een hoger niveau. Wat verwacht de arts bij de bacteriepopulatie in de longen?", opties: [
+          { t: "De populatie groeit niet meer, omdat gevoelige bacteriën niet meer delen; de afweer ruimt ze op.", goed: true, waarom: "Molecuul (binding) → cel (geen deling) → populatie (geen groei) → organisme (herstel)." },
+          { t: "De populatie verandert niet, omdat het antibioticum alleen op molecuulniveau werkt.", waarom: "Een effect op molecuulniveau werkt door naar cel, populatie en organisme. Dat is precies systeemdenken (C23.4)." },
+          { t: "Alle bacteriën worden door het antibioticum resistent.", waarom: "Het antibioticum veroorzaakt geen resistentie. Het selecteert bacteriën die al resistent waren." },
+          { t: "De populatie groeit sneller, omdat dode bacteriën voedingsstoffen leveren.", waarom: "Levende bacteriën delen niet meer. Extra voedingsstoffen veranderen dat niet." },
+        ] },
+      ],
+    },
+    {
+      id: "d-plasmacel", niveaus: ["havo", "vwo"], titel: "Een plasmacel aan het werk",
+      context: "Een plasmacel maakt grote hoeveelheden antistoffen. Een onderzoeker voegt een stof toe die de mitochondriën remt.",
+      systeem: "plasmacel", niv: ["cel"],
+      vakken: { deel: ["kern (DNA)", "ER met ribosomen", "Golgi-systeem", "mitochondriën"], input: ["aminozuren", "glucose en zuurstof"], output: ["antistoffen", "CO₂"], extern: ["stof die mitochondriën remt"] },
+      afleiders: { deel: ["chloroplasten", "celwand"], input: ["antistoffen", "antigenen op MHC-I"], output: ["aminozuren", "glucose"], extern: ["zweetklier", "hoge buitentemperatuur"] },
+      vragen: [
+        { niveau: "beide", vraag: "Wat is het effect van de remmer op het niveau van het organisme?", opties: [
+          { t: "De infectie wordt trager bestreden, omdat er minder antistoffen worden gemaakt.", goed: true, waarom: "Minder ATP → minder eiwitsynthese en minder afgifte → minder antistoffen → zwakkere afweer." },
+          { t: "Er worden juist meer antistoffen gemaakt om het tekort aan ATP te compenseren.", waarom: "Voor het maken en afgeven van antistoffen is ATP nodig. Minder ATP betekent minder antistoffen." },
+          { t: "Geen effect, want antistoffen worden in het bloed gemaakt.", waarom: "Antistoffen worden in de plasmacel gemaakt en daarna aan het bloed afgegeven." },
+          { t: "De persoon krijgt koorts, omdat de mitochondriën warmte vasthouden.", waarom: "Koorts ontstaat door een hogere normwaarde in de hypothalamus, niet door geremde mitochondriën." },
+        ] },
+        { niveau: "vwo", vraag: "Waarom heeft een plasmacel zoveel ER met ribosomen?", opties: [
+          { t: "Antistoffen zijn eiwitten voor export; die worden aan ribosomen op het ER gemaakt.", goed: true, waarom: "Structuur past bij functie (C25): veel ER = veel productie van eiwitten die de cel verlaten." },
+          { t: "Het ER levert de ATP voor de productie van antistoffen.", waarom: "ATP komt vooral uit de mitochondriën." },
+          { t: "Ribosomen op het ER breken antigenen af.", waarom: "Ribosomen maken eiwitten. Afbraak gebeurt in lysosomen." },
+          { t: "Het ER slaat antistoffen op tot het volgende contact met het antigeen.", waarom: "Het geheugen zit in geheugencellen, niet in opgeslagen antistoffen." },
+        ] },
+      ],
+    },
+    {
+      id: "d-huid", niveaus: ["havo", "vwo"], titel: "De huid op een warme dag",
+      context: "Op een warme dag fiets je naar school. Je huid helpt je lichaamstemperatuur te regelen.",
+      systeem: "huid", niv: ["orgaan"],
+      vakken: { deel: ["zweetklieren", "bloedvaten", "temperatuurzintuigen"], input: ["warm bloed", "orthosympathische impulsen"], output: ["zweet", "warmte"], extern: ["hoge buitentemperatuur"] },
+      afleiders: { deel: ["skeletspieren", "hypothalamus", "lymfeknoop"], input: ["zweet", "antistoffen"], output: ["glucose", "antistoffen"], extern: ["griepvirus", "antibioticum"] },
+      vragen: [
+        { niveau: "beide", vraag: "Is de huid hier een open of een gesloten systeem?", opties: [
+          { t: "Open: er gaan stoffen en warmte de systeemgrens over.", goed: true, waarom: "Bloed, zweet en warmte kruisen de grens: open systeem (C23.3)." },
+          { t: "Gesloten: de huid is een afsluitende laag rond het lichaam.", waarom: "Afsluitend tegen ziekteverwekkers, maar zweet, warmte en bloed gaan wel de grens over." },
+          { t: "Gesloten: alleen warmte gaat erdoor, geen stoffen.", waarom: "Zweet is een stof die de huid verlaat." },
+          { t: "Open, maar alleen voor warmte.", waarom: "Ook stoffen gaan de grens over, zoals zweet en bloed." },
+        ] },
+        { niveau: "vwo", vraag: "Bij uitdroging maken de zweetklieren minder zweet. Voorspel het effect op het organisme.", opties: [
+          { t: "De lichaamstemperatuur stijgt verder, omdat er minder warmte wordt afgegeven.", goed: true, waarom: "Minder output van warmte bij gelijke productie: het evenwicht verschuift (C23.4, C26)." },
+          { t: "De lichaamstemperatuur daalt, omdat er minder zweet is.", waarom: "Zweet voert warmte af. Minder zweet betekent minder afkoeling." },
+          { t: "Geen effect: de bloedvaten nemen de afkoeling volledig over.", waarom: "Verwijde huidvaten helpen, maar kunnen het wegvallen van zweten niet volledig opvangen." },
+          { t: "De hypothalamus verlaagt de normwaarde om het tekort te compenseren.", waarom: "De normwaarde blijft gelijk. De werkelijke temperatuur wijkt af." },
+        ] },
+      ],
+    },
+    {
+      id: "d-zwemmer", niveaus: ["havo"], titel: "Een zwemmer in koud water",
+      context: "Een zwemmer ligt een half uur in water van 15 °C.",
+      systeem: "het lichaam van de zwemmer", niv: ["organisme"],
+      vakken: { deel: ["hypothalamus", "bloedvaten in de huid", "skeletspieren"], input: ["voedingsstoffen en zuurstof"], output: ["warmte", "CO₂"], extern: ["koud water"] },
+      afleiders: { deel: ["lymfeknoop", "Golgi-systeem", "ribosomen"], input: ["warmte uit het water", "zweet"], output: ["zuurstof", "glucose"], extern: ["antibioticum", "vaccin"] },
+      vragen: [
+        { niveau: "havo", vraag: "Welke reactie werkt de afkoeling tegen?", opties: [
+          { t: "De skeletspieren gaan rillen: meer warmteproductie.", goed: true, waarom: "Rillen is een effector in de regelkring: negatieve terugkoppeling." },
+          { t: "De bloedvaten in de huid verwijden.", waarom: "Verwijden geeft meer warmteafgifte. Bij kou vernauwen de vaten." },
+          { t: "De zweetklieren maken zweet.", waarom: "Zweten koelt af. Dat is bij kou ongewenst." },
+          { t: "De hypothalamus verlaagt de normwaarde.", waarom: "De normwaarde blijft rond 37 °C." },
+        ] },
+        { niveau: "havo", vraag: "Na een uur daalt de lichaamstemperatuur toch. Wat is er met input en output aan de hand?", opties: [
+          { t: "De warmteafgifte (output) is groter geworden dan de warmteproductie.", goed: true, waarom: "Bij evenwicht zijn productie en afgifte gelijk. Nu niet meer." },
+          { t: "Er komt kou het lichaam binnen (input).", waarom: "Kou is geen stof of energie die binnenkomt. Er gaat warmte uit het lichaam naar het water." },
+          { t: "De hypothalamus is uitgevallen.", waarom: "De regelkring werkt wel, maar kan het grote warmteverlies niet bijhouden." },
+          { t: "De spieren produceren meer warmte dan nodig.", waarom: "Dan zou de temperatuur stijgen, niet dalen." },
+        ] },
+      ],
+    },
+    {
+      id: "d-lymfeknoop", niveaus: ["vwo"], titel: "Een lymfeknoop na een vaccinatie",
+      context: "Na een vaccinatie met een virus-eiwit (geen heel virus) zwelt een lymfeknoop in de oksel een paar dagen op.",
+      systeem: "lymfeknoop", niv: ["orgaan"],
+      vakken: { deel: ["dendritische cellen", "T-helpercellen", "B-cellen"], input: ["lymfe met antigenen"], output: ["geactiveerde afweercellen", "antistoffen"], extern: ["vaccin met viruseiwit"] },
+      afleiders: { deel: ["rode bloedcellen", "zweetklieren", "oligodendrocyten"], input: ["zweet", "zuurstof uit de longen"], output: ["zweet", "rode bloedcellen"], extern: ["antibioticum", "hoge buitentemperatuur"] },
+      vragen: [
+        { niveau: "vwo", vraag: "Waarom zwelt de lymfeknoop op?", opties: [
+          { t: "Passende T-helpercellen en B-cellen worden geactiveerd en delen, waardoor er tijdelijk veel meer cellen zijn.", goed: true, waarom: "Activatie leidt tot deling van precies die cellen met een passende receptor." },
+          { t: "Het viruseiwit vermenigvuldigt zich in de lymfeknoop.", waarom: "Een los eiwit kan zich niet vermenigvuldigen." },
+          { t: "Er hopen zich antistoffen op die de lymfeknoop niet kunnen verlaten.", waarom: "Antistoffen verlaten de lymfeknoop via lymfe en bloed." },
+          { t: "De lymfeknoop houdt vocht vast om warmte af te voeren.", waarom: "De zwelling komt door celdeling, niet door warmteregulatie." },
+        ] },
+        { niveau: "vwo", vraag: "Zonder T-helpercellen komt er in de lymfeknoop geen sterke reactie. Welk begrip past daar het best bij?", opties: [
+          { t: "Emergentie: de afweerreactie ontstaat pas door samenwerking van de deelsystemen.", goed: true, waarom: "Geen enkele celsoort kan dit alleen. De eigenschap ontstaat op het niveau van het geheel (C23.4)." },
+          { t: "Negatieve terugkoppeling.", waarom: "Dat gaat over het tegenwerken van een afwijking in een regelkring." },
+          { t: "Selectiedruk.", waarom: "Dat is een begrip uit evolutionair redeneren (C27)." },
+          { t: "Dynamisch evenwicht.", waarom: "Dat gaat over gelijke input en output (C26), niet over samenwerking die iets nieuws oplevert." },
+        ] },
+      ],
+    },
+    {
+      id: "d-populatie", niveaus: ["havo", "vwo"], titel: "Een bacteriepopulatie in een patiënt",
+      context: "In een patiënt leeft een populatie bacteriën. Enkele bacteriën zijn door een mutatie resistent tegen een antibioticum. De patiënt krijgt dat antibioticum.",
+      systeem: "bacteriepopulatie in de patiënt", niv: ["populatie"],
+      vakken: { deel: ["gevoelige bacteriën", "resistente bacteriën"], input: ["voedingsstoffen"], output: ["afvalstoffen"], extern: ["antibioticum"] },
+      afleiders: { deel: ["plasmacellen", "mitochondriën"], input: ["zweet", "geheugencellen"], output: ["voedingsstoffen", "antibioticum"], extern: ["vaccin", "koud water"] },
+      vragen: [
+        { niveau: "beide", vraag: "Voorspel hoe de populatie er na een week behandeling uitziet.", opties: [
+          { t: "Het aandeel resistente bacteriën in de populatie is groter geworden.", goed: true, waarom: "Gevoelige bacteriën sterven; resistente overleven en delen. Selectie (C27) zichtbaar op populatieniveau." },
+          { t: "Alle bacteriën zijn dood.", waarom: "De resistente bacteriën overleven het antibioticum." },
+          { t: "De gevoelige bacteriën zijn resistent geworden.", waarom: "Een bacterie wordt niet resistent door het antibioticum. De resistente waren er al." },
+          { t: "De populatie is precies hetzelfde gebleven.", waarom: "Het antibioticum verandert de samenstelling: de gevoelige bacteriën verdwijnen." },
+        ] },
+      ],
+    },
+  ];
+})();
+</script>
+<!-- ============ EINDE OEFENSTOF ============ -->
+
+<script>
+(() => {
+  "use strict";
+  const RONDE = 4;                          // ketens per ronde
+  const MAXSTAP = { havo: 2, vwo: 3 };      // vwo: stap 3 = organisatieniveaus erbij
+  const STAPNAAM = { 1: "Stap 1 · zet de schakels op volgorde", 2: "Stap 2 · haal de foute kaartjes eruit", 3: "Stap 3 · zet bij elke schakel het niveau" };
+  const NIVEAUS = ["molecuul", "cel", "weefsel", "orgaan", "organisme", "populatie"];
+
+  // ---------- helpers ----------
+  const $app = document.getElementById("app");
+  const h = (tag, attrs = {}, ...kids) => {
+    const el = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs || {})) {
+      if (k === "class") el.className = v;
+      else if (k.startsWith("on")) el.addEventListener(k.slice(2), v);
+      else if (v === true) el.setAttribute(k, "");
+      else if (v !== false && v != null) el.setAttribute(k, v);
+    }
+    for (const kid of kids.flat()) if (kid != null && kid !== false) el.append(kid.nodeType ? kid : document.createTextNode(kid));
+    return el;
+  };
+  const schud = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  // opslag: alleen op het apparaat van de leerling; valt stil terug op geheugen
+  const geheugen = {};
+  const opslag = {
+    lees(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return geheugen[k] || null; } },
+    schrijf(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { geheugen[k] = v; } },
+    wis(k) { try { localStorage.removeItem(k); } catch (e) { delete geheugen[k]; } },
+  };
+
+  // ---------- instellingen uit de link ----------
+  const params = new URLSearchParams(location.search);
+  const sets = window.OEFENSETS || [];
+  const set = sets.find((s) => s.id === params.get("thema")) || sets[0];
+  let niveau = ["havo", "vwo"].includes(params.get("niveau")) ? params.get("niveau") : null;
+  const niveauVast = !!niveau;
+
+  let ketens = [], sleutel = "", voortgang = null;
+  function laadNiveau(n) {
+    niveau = n;
+    ketens = set.ketens.filter((k) => k.niveau === niveau);
+    sleutel = `ketenpuzzel:v1:${set.id}:${niveau}`;
+    voortgang = opslag.lees(sleutel) || { k: {}, rondes: 0, record: 0, totaal: 0 };
+    ketens.forEach((k) => { if (!voortgang.k[k.id]) voortgang.k[k.id] = { stap: 1, beheerst: false, gemist: 0, laatst: -1 }; });
+    bewaar();
+    laadSys();
+  }
+  const bewaar = () => opslag.schrijf(sleutel, voortgang);
+  const aantalBeheerst = () => ketens.filter((k) => voortgang.k[k.id].beheerst).length;
+
+  // ---------- kop ----------
+  function kop() { return kopAlg("Ketenpuzzel", "C21 oorzaak-gevolg", aantalBeheerst(), ketens.length, "ketens"); }
+  function kopAlg(titel, label, b, n, eenheid) {
+    return h("div", { class: "kopbalk" },
+      h("div", {},
+        h("h1", {}, titel),
+        h("div", { class: "rij" }, h("span", { class: "label" }, niveau.toUpperCase()), h("span", { class: "label licht" }, label), h("span", { class: "klein" }, set.titel))),
+      h("div", { class: "voortgang" },
+        h("div", { class: "klein" }, `Beheerst: ${b} van ${n} ${eenheid}`),
+        h("div", { class: "balk" }, h("div", { style: `width:${n ? (100 * b) / n : 0}%` }))));
+  }
+
+  // ---------- niveaukeuze ----------
+  function niveauScherm() {
+    $app.replaceChildren(
+      h("h1", {}, "Oefenen met denk- en werkwijzen"),
+      h("p", {}, "Oefen met oorzaak-gevolgketens en systeemdiagrammen over afweer, virussen en bacteriën en thermoregulatie. Kies je niveau."),
+      h("div", { class: "niveaukeuze" },
+        h("button", { class: "knop", onclick: () => { laadNiveau("havo"); menu(); } }, "havo"),
+        h("button", { class: "knop", onclick: () => { laadNiveau("vwo"); menu(); } }, "vwo")));
+  }
+
+  // ---------- startscherm ----------
+  function start() {
+    const max = MAXSTAP[niveau], b = aantalBeheerst();
+    const tegels = ketens.map((k) => {
+      const v = voortgang.k[k.id];
+      const stippen = [];
+      for (let s = 1; s <= max; s++) stippen.push(h("span", { class: "stip" + (v.beheerst || s < v.stap ? " aan" : "") }));
+      return h("div", { class: "tegel" + (v.beheerst ? " beheerst" : "") },
+        h("div", { class: "titel" }, k.titel),
+        h("div", { class: "stippen" }, stippen, h("span", { class: "klein", style: "margin-left:6px" }, v.beheerst ? "beheerst" : `stap ${v.stap}`)));
+    });
+    const tekst = b === ketens.length
+      ? "Je beheerst alle ketens. Een herhalingsronde houdt het vers."
+      : voortgang.rondes === 0 ? "Een ronde = 4 ketens, ongeveer 5 minuten." : `Nog ${ketens.length - b} ketens te gaan. Een ronde = 4 ketens, ongeveer 5 minuten.`;
+    $app.replaceChildren(
+      kop(),
+      h("div", { class: "kaart" },
+        h("div", { class: "rij", style: "margin-bottom:8px" }, h("button", { class: "knop tweede klein-knop", onclick: menu }, "← Menu")),
+        h("h2", {}, "Zo werkt het"),
+        h("ul", { class: "uitleg" },
+          h("li", {}, "Je krijgt een begin en een eind. Bouw de keten ertussen: tik op een kaartje om het toe te voegen, en gebruik ↑ ↓ ✕ om te schuiven of terug te leggen."),
+          h("li", {}, `Elke keten heeft ${max} stappen: ${niveau === "vwo" ? "volgorde, foute kaartjes eruit, en organisatieniveaus erbij" : "volgorde, en daarna foute kaartjes eruit"}. Een keten is beheerst als je de laatste stap in één keer goed hebt, zonder hint.${niveau === "vwo" ? " Heb je een stap in één keer goed, dan sla je de tussenstap over." : ""}`),
+          h("li", {}, "Ketens die je nog niet beheerst, komen vaker terug. Elke ronde krijg je andere foute kaartjes.")),
+        h("div", { class: "raster" }, tegels),
+        h("div", { class: "rij" },
+          h("button", { class: "knop", onclick: nieuweRonde }, voortgang.rondes ? "Start een nieuwe ronde" : "Start de eerste ronde"),
+          h("span", { class: "klein" }, tekst),
+          voortgang.record ? h("span", { class: "klein" }, `Je record: ${voortgang.record} van ${RONDE * 3} punten in één ronde.`) : null),
+        h("div", { class: "rij", style: "margin-top:14px" },
+          h("button", { class: "knop tweede", onclick: () => { if (confirmWis()) { opslag.wis(sleutel); laadNiveau(niveau); start(); } } }, "Voortgang wissen"))));
+  }
+  // bevestiging zonder browserdialoog (blokkeert in een iframe niet)
+  let wisKlik = 0;
+  function confirmWis() { wisKlik++; if (wisKlik >= 2) { wisKlik = 0; return true; } setTimeout(() => (wisKlik = 0), 3000); toon("Klik nog een keer binnen 3 seconden om je voortgang te wissen."); return false; }
+  function toon(t) { const m = h("div", { class: "melding let" }, t); $app.append(m); setTimeout(() => m.remove(), 3000); }
+
+  // ---------- ronde ----------
+  let ronde = null;
+  function nieuweRonde() {
+    voortgang.rondes++;
+    const nr = voortgang.rondes;
+    const open = ketens.filter((k) => !voortgang.k[k.id].beheerst);
+    const klaar = ketens.filter((k) => voortgang.k[k.id].beheerst);
+    // prioriteit: vaak gemist en lang niet gezien eerst, met wat toeval
+    const score = (k) => { const v = voortgang.k[k.id]; return v.gemist * 2 + (nr - 1 - v.laatst) * 0.5 + Math.random() * 2; };
+    let keuze = open.sort((a, b) => score(b) - score(a)).slice(0, RONDE);
+    if (keuze.length < RONDE) keuze = keuze.concat(schud(klaar).slice(0, RONDE - keuze.length));
+    ronde = { nr, lijst: schud(keuze), i: 0, punten: 0, uitslag: [], reeks: 0 };
+    bewaar();
+    puzzel();
+  }
+
+  // ---------- puzzel ----------
+  let p = null;
+  function puzzel() {
+    const k = ronde.lijst[ronde.i];
+    const v = voortgang.k[k.id];
+    const stap = v.beheerst ? MAXSTAP[niveau] : v.stap;
+    const afl = stap === 1 ? schud(k.afleiders).slice(0, 1) : k.afleiders.slice();
+    const kaartjes = schud([
+      ...k.schakels.map((s, i) => ({ id: "s" + i, t: s.t, soort: "s", i, niv: s.niv || [] })),
+      ...afl.map((a, i) => ({ id: "a" + i, t: a.t, soort: "a", waarom: a.waarom })),
+    ]);
+    p = { k, v, stap, kaartjes, keten: [], niv: {}, pogingen: 0, hints: 0, uitwerking: false, opgelost: false, markeer: false, melding: null, uitStap: 0 };
+    teken();
+  }
+  const kaartje = (id) => p.kaartjes.find((c) => c.id === id);
+
+  function teken() {
+    const { k, stap } = p;
+    const n = k.schakels.length;
+    const metNiv = niveau === "vwo" && stap === 3;
+
+    // keten
+    const ketenEl = h("div", { class: "keten" },
+      h("div", { class: "vast" }, h("small", {}, "begin"), k.begin),
+      h("div", { class: "pijl" }, "↓"));
+    p.keten.forEach((id, pos) => {
+      const c = kaartje(id);
+      let klasse = "schakel";
+      if (p.markeer) klasse += c.soort === "s" && c.i === pos ? " goed" : " fout";
+      const bedien = p.opgelost || p.uitwerking ? null : h("div", { class: "bedien" },
+        h("button", { title: "omhoog", "aria-label": "omhoog", disabled: pos === 0, onclick: () => { schuif(pos, -1); } }, "↑"),
+        h("button", { title: "omlaag", "aria-label": "omlaag", disabled: pos === p.keten.length - 1, onclick: () => { schuif(pos, 1); } }, "↓"),
+        h("button", { title: "terugleggen", "aria-label": "terugleggen", onclick: () => { p.keten.splice(pos, 1); delete p.niv[id]; p.markeer = false; p.melding = null; teken(); } }, "✕"));
+      let nivEl = null;
+      if (metNiv) {
+        const sel = h("select", { class: "niv", "aria-label": "organisatieniveau", disabled: p.opgelost || p.uitwerking, onchange: (e) => { p.niv[id] = e.target.value; p.markeer = false; } },
+          h("option", { value: "" }, "niveau…"), NIVEAUS.map((x) => h("option", { value: x, selected: p.niv[id] === x }, x)));
+        if (p.markeer && p.niv[id] && c.soort === "s") sel.classList.add(c.niv.includes(p.niv[id]) ? "goed" : "fout");
+        nivEl = sel;
+      }
+      ketenEl.append(h("div", { class: klasse }, h("div", { class: "nr" }, pos + 1), h("div", {}, c.t, nivEl ? h("div", {}, nivEl) : null), bedien));
+      ketenEl.append(h("div", { class: "pijl" }, "↓"));
+    });
+    if (!p.opgelost && !p.uitwerking) ketenEl.append(h("div", { class: "slot" }, p.keten.length ? "tik op een kaartje om de keten aan te vullen" : "tik op het kaartje dat als eerste komt"), h("div", { class: "pijl" }, "↓"));
+    ketenEl.append(h("div", { class: "vast" }, h("small", {}, "eind"), k.eind));
+
+    // pool
+    const over = p.kaartjes.filter((c) => !p.keten.includes(c.id));
+    const pool = h("div", { class: "pool" },
+      h("h3", {}, "Kaartjes"),
+      stap >= 2 ? h("div", { class: "klein" }, "Let op: niet elk kaartje hoort in de keten.") : h("div", { class: "klein" }, `Deze keten heeft ${k.schakels.length} schakels. Eén kaartje hoort er niet bij.`),
+      over.length ? over.map((c) => h("button", { disabled: p.opgelost || p.uitwerking, onclick: () => { p.keten.push(c.id); p.markeer = false; p.melding = null; teken(); } }, c.t)) : h("div", { class: "leeg" }, "Alle kaartjes liggen in de keten."));
+
+    // knoppen
+    const knoppen = h("div", { class: "rij", style: "margin-top:12px" });
+    if (!p.opgelost && !p.uitwerking) {
+      knoppen.append(h("button", { class: "knop", onclick: controleer, disabled: p.keten.length === 0 }, "Controleer"));
+      const hintTekst = p.hints === 0 ? "Hint (−1 punt)" : p.hints === 1 ? "Laat zien wat goed staat" : "Toon de uitwerking";
+      knoppen.append(h("button", { class: "knop tweede", onclick: hint, disabled: p.pogingen === 0, title: p.pogingen === 0 ? "Probeer eerst zelf" : "" }, hintTekst));
+      if (p.pogingen === 0) knoppen.append(h("span", { class: "klein" }, "Hints komen vrij na je eerste controle."));
+    }
+
+    // meldingen
+    const meld = [];
+    if (p.melding) meld.push(h("div", { class: "melding " + p.melding.soort }, p.melding.tekst));
+    if (p.hints >= 1 && !p.opgelost) meld.push(h("div", { class: "melding info" }, h("b", {}, "Hint: "), k.hint));
+    if (p.uitwerking) meld.push(uitwerkingEl());
+    if (p.opgelost) meld.push(afloopEl());
+
+    $app.replaceChildren(
+      kop(),
+      h("div", { class: "kaart" },
+        h("div", { class: "rij", style: "justify-content:space-between" },
+          h("div", { class: "rij" }, h("button", { class: "knop tweede klein-knop", onclick: start, title: "Ketens die je al af hebt, blijven meetellen" }, "← Overzicht"),
+            h("span", { class: "stapinfo" }, `Keten ${ronde.i + 1} van ${ronde.lijst.length} · ${STAPNAAM[stap]}`)),
+          h("div", { class: "klein" }, `Punten deze ronde: ${ronde.punten}`)),
+        h("h2", { style: "margin-top:6px" }, k.titel),
+        h("div", { class: "context" }, k.context),
+        h("div", { class: "speelveld" }, h("div", {}, ketenEl), pool),
+        knoppen, meld));
+  }
+
+  function schuif(pos, d) { const a = p.keten; [a[pos], a[pos + d]] = [a[pos + d], a[pos]]; p.markeer = false; p.melding = null; teken(); }
+
+  function controleer() {
+    const { k, stap } = p;
+    const n = k.schakels.length;
+    const inKeten = p.keten.map(kaartje);
+    const afl = inKeten.filter((c) => c.soort === "a").length;
+    const goedeErin = inKeten.filter((c) => c.soort === "s").length;
+    const opPlek = inKeten.filter((c, pos) => c.soort === "s" && c.i === pos).length;
+    const volgordeGoed = afl === 0 && goedeErin === n && opPlek === n;
+    const metNiv = niveau === "vwo" && stap === 3;
+    const nivFout = metNiv ? inKeten.filter((c) => c.soort === "s" && !c.niv.includes(p.niv[c.id])).length : 0;
+    // onvolledige keten telt niet als poging: eerst afmaken
+    if (p.keten.length < n) {
+      p.melding = { soort: "info", tekst: "Je keten is nog niet compleet. Maak hem eerst af; een onvolledige keten telt niet als poging." };
+      return teken();
+    }
+    if (metNiv && inKeten.some((c) => !p.niv[c.id])) {
+      p.melding = { soort: "info", tekst: "Kies eerst bij elke schakel een organisatieniveau." };
+      return teken();
+    }
+    p.pogingen++;
+    if (volgordeGoed && nivFout === 0) return opgelost();
+    const delen = [];
+    if (afl) delen.push(afl === 1 ? "Er staat een kaartje in je keten dat er niet in hoort." : `Er staan ${afl} kaartjes in je keten die er niet in horen.`);
+    if (goedeErin < n) delen.push(n - goedeErin === 1 ? "Er ontbreekt nog een schakel." : `Er ontbreken nog ${n - goedeErin} schakels.`);
+    if (!afl && goedeErin === n && opPlek < n) delen.push(`Alle goede schakels staan erin, maar ${n - opPlek} ${n - opPlek === 1 ? "staat" : "staan"} nog niet op de goede plek.`);
+    if (volgordeGoed && nivFout) delen.push(`De volgorde klopt! Nog ${nivFout} ${nivFout === 1 ? "niveau klopt" : "niveaus kloppen"} niet.`);
+    p.melding = { soort: "let", tekst: delen.join(" ") + (p.pogingen === 1 ? " Probeer het nog eens, of vraag een hint." : "") };
+    if (p.hints >= 2) p.markeer = true;
+    teken();
+  }
+
+  function hint() {
+    if (p.hints === 0) { p.hints = 1; }
+    else if (p.hints === 1) { p.hints = 2; p.markeer = true; p.melding = { soort: "info", tekst: "Groen staat goed, rood nog niet. Bij vwo-niveaus: groen of rood rond het keuzemenu." }; }
+    else { p.uitwerking = true; p.uitStap = 0; }
+    teken();
+  }
+
+  function punten() { if (p.uitwerking) return 0; if (p.hints > 0) return 1; return p.pogingen === 1 ? 3 : 2; }
+
+  function opgelost() {
+    p.opgelost = true; p.markeer = true;
+    const pt = punten();
+    const v = p.v, max = MAXSTAP[niveau];
+    let verandering = "";
+    if (!v.beheerst) {
+      if (p.stap === max && pt === 3) { v.beheerst = true; verandering = "beheerst"; }
+      // doorschieten: in één keer goed zonder hint → meteen naar de laatste stap
+      else if (p.stap < max && pt >= 2) { v.stap = pt === 3 ? max : v.stap + 1; verandering = "stap " + v.stap; }
+      if (pt < 3) v.gemist++; else v.gemist = Math.max(0, v.gemist - 1);
+    }
+    v.laatst = ronde.nr;
+    ronde.punten += pt; voortgang.totaal += pt;
+    ronde.reeks = pt === 3 ? ronde.reeks + 1 : 0;
+    ronde.uitslag.push({ titel: p.k.titel, pt, verandering });
+    p.pt = pt; p.verandering = verandering;
+    bewaar(); teken();
+  }
+
+  function waaromEl() {
+    const afl = p.kaartjes.filter((c) => c.soort === "a");
+    if (!afl.length) return null;
+    return h("div", { class: "waarom" },
+      h("b", {}, afl.length === 1 ? "Waarom hoorde dit kaartje er niet in?" : "Waarom hoorden deze kaartjes er niet in?"),
+      afl.map((c) => h("details", {}, h("summary", {}, c.t), h("div", { style: "margin-top:6px" }, c.waarom))));
+  }
+
+  function afloopEl() {
+    const laatste = ronde.i === ronde.lijst.length - 1;
+    const lof = p.pt === 3 ? (ronde.reeks >= 2 ? `In één keer goed. Dat is ${ronde.reeks} op rij!` : "In één keer goed!") : p.pt === 2 ? "Goed, na een extra poging." : "Goed, met hulp van een hint.";
+    const extra = p.verandering === "beheerst" ? " Deze keten is nu beheerst." : p.verandering ? ` Volgende keer: ${p.verandering}.` : (p.v.beheerst ? "" : " Deze keten komt terug.");
+    return h("div", { class: "melding top" },
+      h("div", {}, h("b", {}, `+${p.pt} ${p.pt === 1 ? "punt" : "punten"}. `), lof, extra),
+      waaromEl(),
+      h("div", { class: "rij", style: "margin-top:10px" },
+        h("button", { class: "knop", onclick: volgende }, laatste ? "Bekijk je ronde" : "Volgende keten")));
+  }
+
+  function uitwerkingEl() {
+    const { k } = p;
+    const n = k.schakels.length;
+    const metNiv = niveau === "vwo" && p.stap === 3;
+    const items = k.schakels.slice(0, p.uitStap).map((s) => h("li", {}, s.t, metNiv ? h("span", { class: "klein" }, `  · ${s.niv.join(" of ")}`) : null));
+    const klaar = p.uitStap >= n;
+    return h("div", { class: "melding info uitwerking" },
+      h("b", {}, "Uitwerking"), h("span", { class: "klein" }, " · 0 punten voor deze keten, hij komt later terug."),
+      h("ol", {}, items),
+      !klaar ? h("button", { class: "knop tweede", onclick: () => { p.uitStap++; teken(); } }, p.uitStap === 0 ? "Toon de eerste schakel" : "Volgende schakel") : null,
+      klaar ? waaromEl() : null,
+      klaar ? h("div", { class: "rij", style: "margin-top:10px" }, h("button", { class: "knop", onclick: naUitwerking }, ronde.i === ronde.lijst.length - 1 ? "Bekijk je ronde" : "Volgende keten")) : null);
+  }
+
+  function naUitwerking() {
+    const v = p.v;
+    if (!v.beheerst) v.gemist++;
+    v.laatst = ronde.nr;
+    ronde.reeks = 0;
+    ronde.uitslag.push({ titel: p.k.titel, pt: 0, verandering: "" });
+    bewaar(); volgende();
+  }
+
+  function volgende() {
+    if (ronde.i < ronde.lijst.length - 1) { ronde.i++; puzzel(); }
+    else eindeRonde();
+  }
+
+  // ---------- einde ronde ----------
+  function eindeRonde() {
+    const max = ronde.lijst.length * 3;
+    const record = ronde.punten > voortgang.record;
+    if (record) voortgang.record = ronde.punten;
+    bewaar();
+    const b = aantalBeheerst(), n = ketens.length;
+    const code = `${niveau === "havo" ? "H" : "V"} · ronde ${ronde.nr} · ${ronde.punten}/${max} punten · beheerst ${b}/${n}`;
+    const nogTeGaan = n - b;
+    const aansporing = nogTeGaan === 0
+      ? "Alles beheerst. Knap! Een herhalingsronde later deze week houdt het vast."
+      : ronde.punten >= max - 2
+        ? `Sterke ronde. Nog ${nogTeGaan} ${nogTeGaan === 1 ? "keten" : "ketens"} te gaan: pak je de volgende ronde ook?`
+        : `Nog ${nogTeGaan} ${nogTeGaan === 1 ? "keten" : "ketens"} te gaan. De ketens die nog lastig waren, komen in de volgende ronde terug, met andere foute kaartjes.`;
+    $app.replaceChildren(
+      kop(),
+      h("div", { class: "kaart" },
+        h("h2", {}, `Ronde ${ronde.nr} klaar: ${ronde.punten} van ${max} punten`),
+        record && ronde.nr > 1 ? h("div", { class: "melding top" }, "Nieuw persoonlijk record!") : null,
+        h("table", { class: "tabel" }, ronde.uitslag.map((u) => h("tr", {},
+          h("td", {}, u.titel), h("td", {}, `${u.pt} ${u.pt === 1 ? "punt" : "punten"}`),
+          h("td", { class: "omhoog" }, u.verandering === "beheerst" ? "✓ beheerst" : u.verandering ? "↑ " + u.verandering : "")))),
+        h("p", {}, aansporing),
+        h("div", { class: "rij" },
+          h("button", { class: "knop", onclick: nieuweRonde }, "Nog een ronde"),
+          h("button", { class: "knop tweede", onclick: start }, "Naar het overzicht"),
+          h("button", { class: "knop tweede", onclick: menu }, "Menu")),
+        h("div", { style: "margin-top:16px" },
+          h("div", { class: "klein" }, "Code voor Learnbeat (kopieer en plak bij de vraag onder deze oefening):"),
+          h("div", { class: "code" }, code))));
+  }
+
+  // =====================================================================
+  // MENU
+  // =====================================================================
+  function menuKaart(titel, label, tekst, b, n, eenheid, actie, gestart) {
+    return h("div", { class: "kaart menukaart" },
+      h("div", { class: "rij" }, h("h2", { style: "margin:0" }, titel), h("span", { class: "label licht" }, label)),
+      h("p", {}, tekst),
+      h("div", { class: "klein" }, `Beheerst: ${b} van ${n} ${eenheid}`),
+      h("div", { class: "balk", style: "margin:4px 0 12px" }, h("div", { style: `width:${n ? (100 * b) / n : 0}%` })),
+      h("button", { class: "knop", onclick: actie }, gestart ? "Verder oefenen" : "Beginnen"));
+  }
+  function menu() {
+    $app.replaceChildren(
+      h("div", { class: "kopbalk" }, h("div", {},
+        h("h1", {}, "Oefenen met denk- en werkwijzen"),
+        h("div", { class: "rij" }, h("span", { class: "label" }, niveau.toUpperCase()), h("span", { class: "klein" }, set.titel)))),
+      h("div", { class: "menu" },
+        menuKaart("Ketenpuzzel", "C21 oorzaak-gevolg", "Bouw oorzaak-gevolgketens tussen een begin en een eind, en haal de foute schakels eruit.", aantalBeheerst(), ketens.length, "ketens", start, voortgang.rondes > 0),
+        diagrammen.length ? menuKaart("Systeemdiagram", "C23 systemen", "Vul systeemdiagrammen in: grens, deelsystemen, input, output en externe factor. Voorspel daarna wat een verstoring doet.", sysBeheerst(), diagrammen.length, "diagrammen", sysStart, sysVg.rondes > 0) : null),
+      !niveauVast ? h("div", { class: "rij", style: "margin-top:14px" }, h("button", { class: "knop tweede", onclick: niveauScherm }, "Ander niveau")) : "");
+  }
+
+  // =====================================================================
+  // SYSTEEMDIAGRAM (C23)
+  // =====================================================================
+  const SYS_RONDE = 3, SYS_MAX = 2;
+  const SOORT = { deel: "Deelsysteem", input: "Input", output: "Output", extern: "Externe factor" };
+  let diagrammen = [], sysSleutel = "", sysVg = null;
+  function laadSys() {
+    diagrammen = (set.diagrammen || []).filter((d) => d.niveaus.includes(niveau));
+    sysSleutel = `systeem:v1:${set.id}:${niveau}`;
+    sysVg = opslag.lees(sysSleutel) || { d: {}, rondes: 0, record: 0 };
+    diagrammen.forEach((d) => { if (!sysVg.d[d.id]) sysVg.d[d.id] = { stap: 1, beheerst: false, gemist: 0, laatst: -1 }; });
+    sysBewaar();
+  }
+  const sysBewaar = () => opslag.schrijf(sysSleutel, sysVg);
+  const sysBeheerst = () => diagrammen.filter((d) => sysVg.d[d.id].beheerst).length;
+  const vragenVoor = (d) => d.vragen.filter((v) => v.niveau === "beide" || v.niveau === niveau);
+  const sysMaxPunten = (d) => 3 + vragenVoor(d).length;
+  function kopSys() { return kopAlg("Systeemdiagram", "C23 systemen", sysBeheerst(), diagrammen.length, "diagrammen"); }
+
+  function sysStart() {
+    const b = sysBeheerst();
+    const tegels = diagrammen.map((d) => {
+      const v = sysVg.d[d.id];
+      const stippen = [];
+      for (let s = 1; s <= SYS_MAX; s++) stippen.push(h("span", { class: "stip" + (v.beheerst || s < v.stap ? " aan" : "") }));
+      return h("div", { class: "tegel" + (v.beheerst ? " beheerst" : "") },
+        h("div", { class: "titel" }, d.titel),
+        h("div", { class: "klein" }, `niveau: ${d.niv[0]}`),
+        h("div", { class: "stippen" }, stippen, h("span", { class: "klein", style: "margin-left:6px" }, v.beheerst ? "beheerst" : `stap ${v.stap}`)));
+    });
+    $app.replaceChildren(
+      kopSys(),
+      h("div", { class: "kaart" },
+        h("div", { class: "rij", style: "margin-bottom:8px" }, h("button", { class: "knop tweede klein-knop", onclick: menu }, "← Menu")),
+        h("h2", {}, "Zo werkt het"),
+        h("ul", { class: "uitleg" },
+          h("li", {}, "Je krijgt een situatie en een leeg systeemdiagram. Kies in elk vak het goede onderdeel: het organisatieniveau, de deelsystemen binnen de grens, de input en output die de grens kruisen, en de externe factor die van buiten invloed heeft."),
+          h("li", {}, "Klopt het diagram, dan krijg je één of twee vragen: wat doet een verstoring, is het systeem open of gesloten, wat is emergentie?"),
+          h("li", {}, "Stap 1 heeft weinig foute opties, stap 2 meer. Een diagram is beheerst als je stap 2 in één keer goed hebt én de vragen in één keer goed beantwoordt.")),
+        h("div", { class: "raster" }, tegels),
+        h("div", { class: "rij" },
+          h("button", { class: "knop", onclick: sysNieuweRonde }, sysVg.rondes ? "Start een nieuwe ronde" : "Start de eerste ronde"),
+          h("span", { class: "klein" }, b === diagrammen.length ? "Alles beheerst. Een herhalingsronde houdt het vers." : `Een ronde = ${SYS_RONDE} diagrammen, ongeveer 6 minuten.`),
+          sysVg.record ? h("span", { class: "klein" }, `Je record: ${sysVg.record} punten in één ronde.`) : null),
+        h("div", { class: "rij", style: "margin-top:14px" },
+          h("button", { class: "knop tweede", onclick: () => { if (confirmWis()) { opslag.wis(sysSleutel); laadSys(); sysStart(); } } }, "Voortgang wissen"))));
+  }
+
+  let sr = null, q = null;
+  function sysNieuweRonde() {
+    sysVg.rondes++;
+    const nr = sysVg.rondes;
+    const open = diagrammen.filter((d) => !sysVg.d[d.id].beheerst), klaar = diagrammen.filter((d) => sysVg.d[d.id].beheerst);
+    const score = (d) => { const v = sysVg.d[d.id]; return v.gemist * 2 + (nr - 1 - v.laatst) * 0.5 + Math.random() * 2; };
+    let keuze = open.sort((a, b) => score(b) - score(a)).slice(0, SYS_RONDE);
+    if (keuze.length < SYS_RONDE) keuze = keuze.concat(schud(klaar).slice(0, SYS_RONDE - keuze.length));
+    sr = { nr, lijst: schud(keuze), i: 0, punten: 0, max: 0, uitslag: [] };
+    sysBewaar(); sysPuzzel();
+  }
+
+  function sysPuzzel() {
+    const d = sr.lijst[sr.i], v = sysVg.d[d.id];
+    const stap = v.beheerst ? SYS_MAX : v.stap;
+    const opts = {};
+    for (const s of Object.keys(SOORT)) {
+      const afl = stap === 1 ? schud(d.afleiders[s] || []).slice(0, 1) : (d.afleiders[s] || []);
+      opts[s] = schud([...d.vakken[s], ...afl]);
+    }
+    const keuze = { niv: "" };
+    for (const s of Object.keys(SOORT)) keuze[s] = d.vakken[s].map(() => "");
+    const vragen = vragenVoor(d).map((vr) => ({ ...vr, opties: schud(vr.opties), gekozen: [], goedEerst: null }));
+    q = { d, v, stap, opts, keuze, pogingen: 0, hints: 0, markeer: false, uitwerking: false, fase: "diagram", melding: null, diagramPt: 0, vragen, vi: 0 };
+    sysTeken();
+  }
+
+  // welke vakken kloppen (volgorde binnen een soort maakt niet uit)
+  function vakStatus() {
+    const st = { niv: q.d.niv.includes(q.keuze.niv) };
+    for (const s of Object.keys(SOORT)) {
+      const over = q.d.vakken[s].slice();
+      st[s] = q.keuze[s].map((x) => { const i = over.indexOf(x); if (i >= 0) { over.splice(i, 1); return true; } return false; });
+    }
+    return st;
+  }
+
+  function sysTeken() {
+    const { d, stap } = q;
+    const slot = q.fase !== "diagram";
+    const st = vakStatus();
+    const kleur = (ok) => (q.markeer || slot ? (ok ? " goed" : " fout") : "");
+    const sel = (soort, i) => {
+      const lijst = soort === "niv" ? NIVEAUS : q.opts[soort];
+      const waarde = soort === "niv" ? q.keuze.niv : q.keuze[soort][i];
+      const ok = soort === "niv" ? st.niv : st[soort][i];
+      return h("select", { class: "vakkeuze" + (waarde ? kleur(ok) : ""), disabled: slot, "aria-label": soort === "niv" ? "organisatieniveau" : SOORT[soort],
+        onchange: (e) => { if (soort === "niv") q.keuze.niv = e.target.value; else q.keuze[soort][i] = e.target.value; q.markeer = q.hints >= 2; q.melding = null; sysTeken(); } },
+        h("option", { value: "" }, "kies…"), lijst.map((x) => h("option", { value: x, selected: waarde === x }, x)));
+    };
+    const io = (soort) => h("div", { class: "io " + soort },
+      h("div", { class: "io-label" }, soort === "input" ? "Input →" : "→ Output"),
+      q.keuze[soort].map((_, i) => h("div", { class: "vak" }, sel(soort, i))));
+    const diagram = h("div", { class: "sysdiag" },
+      h("div", { class: "ext" }, h("div", { class: "ext-label" }, "Externe factor"), sel("extern", 0), h("div", { class: "ext-pijl" }, "⇣")),
+      h("div", { class: "sysmid" },
+        io("input"),
+        h("div", { class: "grens" },
+          h("div", { class: "grens-kop" }, h("b", {}, "Systeem: ", d.systeem), h("span", { class: "rij", style: "gap:6px" }, h("span", { class: "klein" }, "organisatieniveau:"), sel("niv"))),
+          h("div", { class: "klein", style: "margin-top:6px" }, "Deelsystemen"),
+          h("div", { class: "deelgrid" }, q.keuze.deel.map((_, i) => h("div", { class: "vak" }, sel("deel", i))))),
+        io("output")));
+
+    const blok = [];
+    if (q.fase === "diagram") {
+      const knoppen = h("div", { class: "rij", style: "margin-top:12px" },
+        h("button", { class: "knop", onclick: sysControleer }, "Controleer"),
+        h("button", { class: "knop tweede", onclick: sysHint, disabled: q.pogingen === 0 }, q.hints === 0 ? "Hint (−1 punt)" : q.hints === 1 ? "Laat zien wat goed staat" : "Toon de uitwerking"),
+        q.pogingen === 0 ? h("span", { class: "klein" }, "Hints komen vrij na je eerste controle.") : null);
+      blok.push(knoppen);
+      if (q.melding) blok.push(h("div", { class: "melding " + q.melding.soort }, q.melding.tekst));
+      if (q.hints >= 1) blok.push(h("div", { class: "melding info" }, h("b", {}, "Hint: "), "Deelsystemen liggen binnen de grens. Input en output kruisen de grens. Een externe factor komt van buiten en beïnvloedt het systeem. Kijk ook: wat bestaat er níét op dit organisatieniveau?"));
+    } else {
+      blok.push(h("div", { class: "melding top" }, q.uitwerking ? "Dit is het ingevulde diagram (0 punten voor het diagram)." : `Diagram klopt: +${q.diagramPt} ${q.diagramPt === 1 ? "punt" : "punten"}.`));
+      blok.push(vraagEl());
+    }
+    $app.replaceChildren(
+      kopSys(),
+      h("div", { class: "kaart" },
+        h("div", { class: "rij", style: "justify-content:space-between" },
+          h("div", { class: "rij" }, h("button", { class: "knop tweede klein-knop", onclick: sysStart }, "← Overzicht"),
+            h("span", { class: "stapinfo" }, `Diagram ${sr.i + 1} van ${sr.lijst.length} · stap ${stap}${stap === 1 ? " · weinig foute opties" : " · alle foute opties"}`)),
+          h("div", { class: "klein" }, `Punten deze ronde: ${sr.punten}`)),
+        h("h2", { style: "margin-top:8px" }, d.titel),
+        h("div", { class: "context" }, d.context),
+        diagram, blok));
+  }
+
+  function sysControleer() {
+    const leeg = !q.keuze.niv || Object.keys(SOORT).some((s) => q.keuze[s].some((x) => !x));
+    if (leeg) { q.melding = { soort: "info", tekst: "Vul eerst alle vakken in. Een onvolledig diagram telt niet als poging." }; return sysTeken(); }
+    const st = vakStatus();
+    let fout = st.niv ? 0 : 1, totaal = 1;
+    for (const s of Object.keys(SOORT)) { totaal += st[s].length; fout += st[s].filter((x) => !x).length; }
+    q.pogingen++;
+    if (fout === 0) { q.diagramPt = q.hints > 0 ? 1 : q.pogingen === 1 ? 3 : 2; sr.punten += q.diagramPt; q.fase = "vragen"; return sysTeken(); }
+    q.melding = { soort: "let", tekst: `${totaal - fout} van de ${totaal} vakken kloppen. ` + (q.pogingen === 1 ? "Probeer het nog eens, of vraag een hint." : "") };
+    sysTeken();
+  }
+  function sysHint() {
+    if (q.hints === 0) q.hints = 1;
+    else if (q.hints === 1) { q.hints = 2; q.markeer = true; q.melding = { soort: "info", tekst: "Groen klopt, rood nog niet." }; }
+    else {
+      q.uitwerking = true; q.diagramPt = 0;
+      q.keuze.niv = q.d.niv[0];
+      for (const s of Object.keys(SOORT)) q.keuze[s] = q.d.vakken[s].slice();
+      q.fase = "vragen";
+    }
+    sysTeken();
+  }
+
+  function vraagEl() {
+    const vr = q.vragen[q.vi];
+    if (!vr) return null;
+    const beantwoord = vr.gekozen.some((i) => vr.opties[i].goed);
+    const laatste = q.vi === q.vragen.length - 1;
+    return h("div", { class: "kaart vraagkaart" },
+      h("div", { class: "klein" }, `Vraag ${q.vi + 1} van ${q.vragen.length}`),
+      h("h3", {}, vr.vraag),
+      h("div", { class: "opties" }, vr.opties.map((o, i) => {
+        const gekozen = vr.gekozen.includes(i);
+        return h("div", {},
+          h("button", { class: "optie" + (gekozen ? (o.goed ? " goed" : " fout") : ""), disabled: beantwoord || gekozen,
+            onclick: () => { vr.gekozen.push(i); if (vr.goedEerst === null) vr.goedEerst = !!o.goed; if (o.goed && vr.goedEerst) sr.punten += 1; sysTeken(); } }, o.t),
+          gekozen ? h("div", { class: "optie-uitleg" + (o.goed ? " goed" : "") }, (o.goed ? "Goed. " : "Niet goed. ") + o.waarom) : null);
+      })),
+      beantwoord ? h("div", { class: "rij", style: "margin-top:10px" },
+        h("button", { class: "knop", onclick: () => { if (laatste) sysAfronden(); else { q.vi++; sysTeken(); } } }, laatste ? (sr.i === sr.lijst.length - 1 ? "Bekijk je ronde" : "Volgend diagram") : "Volgende vraag")) : null);
+  }
+
+  function sysAfronden() {
+    const { d, v } = q;
+    const vragenGoed = q.vragen.every((vr) => vr.goedEerst);
+    const pt = q.diagramPt + q.vragen.filter((vr) => vr.goedEerst).length;
+    let verandering = "";
+    if (!v.beheerst) {
+      if (q.stap === SYS_MAX && q.diagramPt === 3 && vragenGoed) { v.beheerst = true; verandering = "beheerst"; }
+      else if (q.stap < SYS_MAX && q.diagramPt >= 2) { v.stap++; verandering = "stap " + v.stap; }
+      if (q.diagramPt < 3 || !vragenGoed) v.gemist++; else v.gemist = Math.max(0, v.gemist - 1);
+    }
+    v.laatst = sr.nr;
+    sr.max += sysMaxPunten(d);
+    sr.uitslag.push({ titel: d.titel, pt, max: sysMaxPunten(d), verandering });
+    sysBewaar();
+    if (sr.i < sr.lijst.length - 1) { sr.i++; sysPuzzel(); } else sysEinde();
+  }
+
+  function sysEinde() {
+    const record = sr.punten > sysVg.record;
+    if (record) sysVg.record = sr.punten;
+    sysBewaar();
+    const b = sysBeheerst(), n = diagrammen.length, rest = n - b;
+    const code = `${niveau === "havo" ? "H" : "V"} · systeem · ronde ${sr.nr} · ${sr.punten}/${sr.max} punten · beheerst ${b}/${n}`;
+    $app.replaceChildren(
+      kopSys(),
+      h("div", { class: "kaart" },
+        h("h2", {}, `Ronde ${sr.nr} klaar: ${sr.punten} van ${sr.max} punten`),
+        record && sr.nr > 1 ? h("div", { class: "melding top" }, "Nieuw persoonlijk record!") : null,
+        h("table", { class: "tabel" }, sr.uitslag.map((u) => h("tr", {},
+          h("td", {}, u.titel), h("td", {}, `${u.pt} van ${u.max}`),
+          h("td", { class: "omhoog" }, u.verandering === "beheerst" ? "✓ beheerst" : u.verandering ? "↑ " + u.verandering : "")))),
+        h("p", {}, rest === 0 ? "Alle diagrammen beheerst. Knap! Probeer ook de ketenpuzzel, of doe later een herhalingsronde." : `Nog ${rest} ${rest === 1 ? "diagram" : "diagrammen"} te gaan. Wat nog lastig was, komt terug met andere foute opties.`),
+        h("div", { class: "rij" },
+          h("button", { class: "knop", onclick: sysNieuweRonde }, "Nog een ronde"),
+          h("button", { class: "knop tweede", onclick: sysStart }, "Naar het overzicht"),
+          h("button", { class: "knop tweede", onclick: menu }, "Menu")),
+        h("div", { style: "margin-top:16px" },
+          h("div", { class: "klein" }, "Code voor Learnbeat (kopieer en plak bij de vraag onder deze oefening):"),
+          h("div", { class: "code" }, code))));
+  }
+
+
+  // ---------- start ----------
+  if (!set) { $app.textContent = "Geen oefenstof gevonden."; return; }
+  if (niveau) { laadNiveau(niveau); menu(); } else niveauScherm();
+})();
+</script>
+</body>
+</html>
