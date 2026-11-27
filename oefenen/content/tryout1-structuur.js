@@ -9,7 +9,7 @@ window.OEFENSETS = window.OEFENSETS || [];
   const BOUW_CEL = [
     { context: "Een plasmacel heeft heel veel ruw ER: ER bezet met ribosomen.", vraag: "Waarom past deze bouw bij de functie van een plasmacel?",
       opties: ["Antistoffen zijn eiwitten die de cel verlaten; die worden aan ribosomen op het ER gemaakt.", "Het ER levert de energie voor het maken van antistoffen.", "In het ER worden opgenomen ziekteverwekkers afgebroken.", "Het ER bewaart antistoffen voor een volgende infectie."], goed: 0,
-      waarom: [null, "Energie (ATP) komt vooral uit mitochondriën.", "Afbraak gebeurt in lysosomen.", "Het geheugen zit in geheugencellen, niet in opgeslagen antistoffen."],
+      waarom: [null, "Energie komt vooral uit mitochondriën.", "Afbraak gebeurt in lysosomen.", "Het geheugen zit in geheugencellen, niet in opgeslagen antistoffen."],
       uitleg: ["Functie van een plasmacel: veel antistoffen maken en afgeven.", "Antistoffen zijn eiwitten voor ‘export’; die worden gemaakt door ribosomen op het ER.", "Veel ruw ER = veel productie: de structuur past bij de functie."] },
     { context: "Een macrofaag bevat veel lysosomen: blaasjes met verteringsenzymen.", vraag: "Waarom past deze bouw bij de functie van een macrofaag?",
       opties: ["Met de enzymen breekt de macrofaag opgenomen ziekteverwekkers af.", "Met de enzymen maakt de macrofaag antistoffen.", "De lysosomen leveren energie voor het bewegen.", "De lysosomen bewaren antigenen voor geheugencellen."], goed: 0,

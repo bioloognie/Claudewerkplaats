@@ -99,9 +99,9 @@ window.OEFENSETS = window.OEFENSETS || [];
       id: "r-rillen", niveaus: ["havo", "vwo"], titel: "Energie voor het rillen", denkwijze: "C24 · E40",
       maak(r) {
         const q = r.kies([160, 240, 320, 480]);
-        return { context: "Bij volledige verbranding (dissimilatie) levert 1 g glucose ongeveer 16 kJ. Bij rillen trekken spieren samen zonder iets te bewegen: vrijwel alle energie komt vrij als warmte.",
+        return { context: "Uit 1 g glucose haalt het lichaam ongeveer 16 kJ energie. Bij rillen trekken spieren samen zonder iets te bewegen: vrijwel alle energie komt vrij als warmte.",
           vraag: `Hoeveel gram glucose is nodig om door rillen ${q} kJ warmte te produceren?`, soort: "getal", antwoord: q / 16, marge: 0.05, eenheid: "g",
-          uitleg: [`Per gram glucose 16 kJ.`, `${q} ÷ 16 = ${nl(q / 16)} g glucose.`, "Energieomzetting: chemische energie (glucose) → via ATP → spiersamentrekking → warmte. De energie gaat niet verloren, ze wordt omgezet (C24)."] };
+          uitleg: [`Per gram glucose 16 kJ.`, `${q} ÷ 16 = ${nl(q / 16)} g glucose.`, "Energieomzetting: chemische energie (glucose) → spiersamentrekking → warmte. De energie gaat niet verloren, ze wordt omgezet (C24)."] };
       },
     },
     {

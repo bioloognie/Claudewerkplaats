@@ -16,7 +16,7 @@ window.OEFENSETS = window.OEFENSETS || [];
         { niveau: "havo", vraag: "Het antibioticum bindt aan de ribosomen. Wat is het gevolg op het niveau van de cel?", opties: [
           { t: "De bacterie maakt geen eiwitten meer en kan daardoor niet groeien en delen.", goed: true, waarom: "Ribosomen maken eiwitten, ook de enzymen die nodig zijn voor groei en deling." },
           { t: "De bacterie maakt geen DNA meer, maar deelt nog wel.", waarom: "Zonder eiwitten (enzymen) kan de cel ook niet delen. Het effect op de ribosomen werkt door." },
-          { t: "De mitochondriën van de bacterie maken geen ATP meer.", waarom: "Bacteriën hebben geen mitochondriën." },
+          { t: "Het antibioticum maakt de afweercellen van de patiënt sterker.", waarom: "Het antibioticum werkt op de bacterie zelf, niet op het afweersysteem van de patiënt." },
           { t: "De ribosomen gaan antistoffen maken tegen het antibioticum.", waarom: "Bacteriën maken geen antistoffen. Dat doen plasmacellen van de patiënt." },
         ] },
         { niveau: "vwo", vraag: "Volg het effect naar een hoger niveau. Wat verwacht de arts bij de bacteriepopulatie in de longen?", opties: [
@@ -35,8 +35,8 @@ window.OEFENSETS = window.OEFENSETS || [];
       afleiders: { deel: ["chloroplasten", "celwand"], input: ["antistoffen", "antigenen op MHC-I"], output: ["aminozuren", "glucose"], extern: ["zweetklier", "hoge buitentemperatuur"] },
       vragen: [
         { niveau: "beide", vraag: "Wat is het effect van de remmer op het niveau van het organisme?", opties: [
-          { t: "De infectie wordt trager bestreden, omdat er minder antistoffen worden gemaakt.", goed: true, waarom: "Minder ATP → minder eiwitsynthese en minder afgifte → minder antistoffen → zwakkere afweer." },
-          { t: "Er worden juist meer antistoffen gemaakt om het tekort aan ATP te compenseren.", waarom: "Voor het maken en afgeven van antistoffen is ATP nodig. Minder ATP betekent minder antistoffen." },
+          { t: "De infectie wordt trager bestreden, omdat er minder antistoffen worden gemaakt.", goed: true, waarom: "Minder energie uit de mitochondriën → minder eiwitsynthese en minder afgifte → minder antistoffen → zwakkere afweer." },
+          { t: "Er worden juist meer antistoffen gemaakt om het tekort aan energie te compenseren.", waarom: "Voor het maken en afgeven van antistoffen is energie nodig. Minder energie betekent minder antistoffen." },
           { t: "Geen effect, want antistoffen worden in het bloed gemaakt.", waarom: "Antistoffen worden in de plasmacel gemaakt en daarna aan het bloed afgegeven." },
           { t: "De persoon krijgt koorts, omdat de mitochondriën warmte vasthouden.", waarom: "Koorts ontstaat door een hogere normwaarde in de hypothalamus, niet door geremde mitochondriën." },
         ] },

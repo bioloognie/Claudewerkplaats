@@ -199,18 +199,17 @@ window.OEFENSETS.push({
       begin: "De hypothalamus stuurt via zenuwen impulsen naar de skeletspieren.",
       eind: "De lichaamstemperatuur stijgt.",
       schakels: [
-        { t: "In de spiercellen wordt glucose met zuurstof verbrand (dissimilatie)." },
-        { t: "De vrijgekomen energie wordt vastgelegd in ATP." },
-        { t: "Met de energie uit ATP trekken de spiervezels steeds kort samen." },
-        { t: "Omdat de spieren niets in beweging zetten, komt vrijwel alle energie vrij als warmte." },
-        { t: "Het bloed neemt de warmte op en verspreidt die door het lichaam." },
+        { t: "De spiervezels trekken snel achter elkaar kort samen, zonder dat er iets beweegt." },
+        { t: "Daarbij zetten de spiercellen chemische energie uit voedingsstoffen om in warmte." },
+        { t: "De warmte wordt afgegeven aan het bloed dat door de spieren stroomt." },
+        { t: "Het bloed verspreidt de warmte door het lichaam." },
       ],
       afleiders: [
-        { t: "Bij het rillen wordt warmte omgezet in glucose.", waarom: "Het is andersom: chemische energie uit glucose wordt uiteindelijk warmte." },
+        { t: "Door het rillen verwijden de bloedvaten in de huid.", waarom: "Bij kou vernauwen de huidvaten juist. Rillen werkt via de skeletspieren." },
         { t: "Bij het rillen gaat energie verloren en verdwijnt.", waarom: "Energie verdwijnt niet: ze wordt omgezet in warmte (behoud van energie)." },
         { t: "De hypothalamus produceert zelf de warmte.", waarom: "De hypothalamus stuurt aan; de warmte komt uit de spieren." },
       ],
-      hint: "Volg de energie: chemische energie (glucose) → ATP → samentrekken van spiervezels → warmte.",
+      hint: "Volg de energie: chemische energie in voedingsstoffen → warmte in de spieren → bloed → hele lichaam.",
     },
     // ======================= VWO =======================
     {
