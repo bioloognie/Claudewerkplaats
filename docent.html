@@ -23,6 +23,17 @@
   .voorbeeld { margin-top:10px; border:2px solid var(--lijn); border-radius:10px; overflow:hidden; }
   .voorbeeld iframe { width:100%; height:700px; border:0; display:block; }
   .hoogte { width:70px; font:inherit; padding:2px 4px; }
+  .rij { display:flex; gap:14px; align-items:center; flex-wrap:wrap; margin:8px 0; }
+  details.onderdeel { border:1px solid var(--lijn); border-radius:10px; padding:8px 12px; margin:10px 0; background:#fff; }
+  details.onderdeel > summary { cursor:pointer; font-weight:700; color:var(--ink); font-size:1.05rem; }
+  .item { border-top:1px solid var(--lijn); padding:10px 0; }
+  .item h3 { margin:0 0 4px; font-size:1rem; color:var(--ink); font-family: Cambria, Georgia, serif; }
+  .meta { font-size:.8rem; color:var(--grijs); }
+  .goed { color:#1F5E36; font-weight:700; }
+  .fout { color:#8A2E14; }
+  .ctx { background:var(--teal-licht); border-radius:8px; padding:6px 10px; margin:6px 0; }
+  ol.uitw { margin:4px 0 0; }
+  @media print { .kaart:not(#inhoud), #printknop, .rij input, .rij label, h1, .wrap > p, .voorbeeld { display:none !important; } details.onderdeel { break-inside:auto; } details.onderdeel > summary::marker { content:""; } body { background:#fff; } }
 </style>
 </head>
 <body>
@@ -34,11 +45,27 @@
     <div class="klein" id="basis"></div>
   </div>
   <div id="lijst"></div>
+  <div class="kaart" id="inhoud">
+    <h2>Inhoud nakijken</h2>
+    <p class="klein">Alle oefenstof met de goede antwoorden, de foute opties en de uitleg die leerlingen te zien krijgen. Bij oefeningen met wisselende getallen zie je één voorbeeld; met <b>Ander voorbeeld</b> krijg je een nieuwe variant.</p>
+    <div class="rij">
+      <label><input type="radio" name="niv" value="havo" checked> havo</label>
+      <label><input type="radio" name="niv" value="vwo"> vwo</label>
+      <button type="button" id="printknop">Afdrukken</button>
+    </div>
+    <div id="inhoudlijst"></div>
+  </div>
   <div class="kaart" id="voorbeeldkaart" style="display:none">
     <h2 id="voorbeeldtitel"></h2>
     <div class="voorbeeld"><iframe id="voorbeeld" title="voorbeeld"></iframe></div>
   </div>
 </div>
+<script src="oefenen/content/tryout1-afweer.js"></script>
+<script src="oefenen/content/tryout1-systemen.js"></script>
+<script src="oefenen/content/tryout1-regelkringen.js"></script>
+<script src="oefenen/content/tryout1-grafieken.js"></script>
+<script src="oefenen/content/tryout1-rekenen.js"></script>
+<script src="oefenen/content/tryout1-structuur.js"></script>
 <script>
 (() => {
   // Thema's en onderdelen. Nieuw thema (try-out 2): voeg hier een regel toe.
@@ -47,9 +74,12 @@
   ];
   const ONDERDELEN = [
     { id: "", naam: "Geheel met menu", uitleg: "Leerlingen kiezen zelf een onderdeel uit het menu." },
-    { id: "keten", naam: "Ketenpuzzel", label: "C21", uitleg: "Oorzaak-gevolgketens bouwen, foute schakels eruit (vwo: ook organisatieniveaus)." },
-    { id: "systeem", naam: "Systeemdiagram", label: "C23", uitleg: "Grens, deelsystemen, input, output en externe factor; vragen over verstoring." },
+    { id: "keten", naam: "Ketenpuzzel", label: "C21 · C24 · C27", uitleg: "Oorzaak-gevolgketens bouwen, foute schakels eruit (vwo: ook organisatieniveaus)." },
+    { id: "systeem", naam: "Schema's: systemen en regelkringen", label: "C23 · C26", uitleg: "Systeemdiagrammen en regelkringen invullen; vragen over verstoring, emergentie, terugkoppeling." },
     { id: "grafiek", naam: "Grafieken en patronen", label: "C20 · E38 · E39 · C22", uitleg: "Patronen herkennen, aflezen (ook log-as), verdubbelingstijd, doorrekenen. Steeds andere getallen." },
+    { id: "reken", naam: "Rekenen", label: "C22 · E40 · C24", uitleg: "Verdubbelen, verhoudingen, eenheden, halfwaardetijd, energie. Steeds andere getallen." },
+    { id: "structuur", naam: "Structuur, functie en verklaringen", label: "C25 · E41", uitleg: "Bouw en functie (vwo ook molecuul), passende conclusie, aannemelijke verklaring, soort verklaring (vwo)." },
+    { id: "denkwijze", naam: "Welke denkwijze?", label: "C20 t/m C27", uitleg: "Herkennen welke denkwijze een toetsvraag vraagt." },
   ];
   const basis = new URL("oefenen/", location.href).href;
   document.getElementById("basis").textContent = "Adres van de oefenomgeving: " + basis;
@@ -107,6 +137,74 @@
     kaart.append(tabel);
     lijst.append(kaart);
   }
+
+  // ---------------- Inhoud nakijken ----------------
+  const SET = (window.OEFENSETS || []).find((s) => s.id === "tryout1") || {};
+  const toeval = { kies: (a) => a[Math.floor(Math.random() * a.length)], int: (a, b) => a + Math.floor(Math.random() * (b - a + 1)), getal: (a, b) => a + Math.random() * (b - a) };
+  const el = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) { if (k === "class") e.className = v; else if (k.startsWith("on")) e.addEventListener(k.slice(2), v); else e.setAttribute(k, v); } for (const k of kids.flat()) if (k != null && k !== false) e.append(k.nodeType ? k : document.createTextNode(String(k))); return e; };
+  const getal = (x) => (typeof x === "number" ? x.toLocaleString("nl-NL", { maximumFractionDigits: 3 }) : x);
+
+  function opgaveEl(o) {
+    const blok = el("div");
+    if (o.context) blok.append(el("div", { class: "ctx" }, o.context));
+    if (o.grafiek) blok.append(el("div", { class: "meta" }, "(Bij deze vraag tekent de oefenomgeving een grafiek; bekijk die via de knop Bekijk hierboven.)"));
+    blok.append(el("div", {}, el("b", {}, "Vraag: "), o.vraag));
+    if (o.soort === "mc") blok.append(el("ul", {}, o.opties.map((t, i) => el("li", { class: i === o.goed ? "goed" : "" }, t, i === o.goed ? "  ✓" : "", o.waarom && o.waarom[i] ? el("span", { class: "fout" }, `  — ${o.waarom[i]}`) : null))));
+    else blok.append(el("div", { class: "goed" }, `Antwoord: ${getal(o.antwoord)} ${o.eenheid || ""}`, o.marge ? el("span", { class: "meta" }, `  (goed gerekend bij ± ${getal(o.marge)})`) : null));
+    blok.append(el("div", { class: "meta" }, "Uitwerking voor leerlingen:"), el("ol", { class: "uitw" }, (o.uitleg || []).map((t) => el("li", {}, t))));
+    return blok;
+  }
+  function generatorItem(g) {
+    const vak = el("div");
+    const kop = el("h3", {}, g.titel);
+    const meta = el("div", { class: "meta" }, `${g.denkwijze} · ${g.niveaus.join(" en ")}`);
+    if (g.maak.bank) {
+      vak.append(el("div", { class: "meta" }, `Vragenbank: ${g.maak.bank.length} varianten (leerlingen krijgen er steeds één, opties geschud).`));
+      g.maak.bank.forEach((o, i) => vak.append(el("div", { style: "margin-top:8px" }, el("b", {}, `Variant ${i + 1}`), opgaveEl(o))));
+      return el("div", { class: "item" }, kop, meta, vak);
+    }
+    const toon = () => { vak.replaceChildren(opgaveEl(g.maak(toeval))); };
+    toon();
+    return el("div", { class: "item" }, kop, meta, el("button", { type: "button", onclick: toon }, "Ander voorbeeld"), vak);
+  }
+  function ketenItem(k) {
+    return el("div", { class: "item" },
+      el("h3", {}, k.titel), el("div", { class: "meta" }, `${k.denkwijze} · ${k.eindterm}`),
+      el("div", { class: "ctx" }, k.context),
+      el("div", {}, el("b", {}, "Begin: "), k.begin),
+      el("ol", {}, k.schakels.map((s) => el("li", {}, s.t, s.niv ? el("span", { class: "meta" }, `  · niveau: ${s.niv.join(" of ")}`) : null))),
+      el("div", {}, el("b", {}, "Eind: "), k.eind),
+      el("div", { style: "margin-top:6px" }, el("b", {}, "Foute kaartjes:")),
+      el("ul", {}, k.afleiders.map((a) => el("li", { class: "fout" }, a.t, el("span", { class: "meta" }, `  — ${a.waarom}`)))),
+      el("div", { class: "meta" }, `Hint: ${k.hint}`));
+  }
+  const VAKNAAM = { deel: "deelsystemen", input: "input", output: "output", extern: "externe factor", verstoring: "verstoring", sensor: "sensor", centrum: "regelcentrum", effector: "effector(en)", effect: "effect", terugkoppeling: "terugkoppeling" };
+  function schemaItem(d, niv) {
+    const rijen = Object.keys(d.vakken).map((s) => el("tr", {}, el("td", {}, VAKNAAM[s] || s), el("td", { class: "goed" }, d.vakken[s].join(" · ")), el("td", { class: "fout" }, (d.afleiders[s] || []).join(" · "))));
+    if (d.niv) rijen.unshift(el("tr", {}, el("td", {}, "organisatieniveau"), el("td", { class: "goed" }, d.niv.join(" of ")), el("td", {}, "")));
+    const vragen = d.vragen.filter((v) => v.niveau === "beide" || v.niveau === niv);
+    return el("div", { class: "item" },
+      el("h3", {}, d.titel), el("div", { class: "meta" }, d.vorm === "regelkring" ? "C26 regelkring" : `C23 systeem: ${d.systeem}`),
+      el("div", { class: "ctx" }, d.context),
+      el("table", {}, el("tr", {}, el("th", {}, "vak"), el("th", {}, "goed"), el("th", {}, "foute opties")), rijen),
+      vragen.map((v) => el("div", { style: "margin-top:8px" }, el("b", {}, "Vraag: "), v.vraag,
+        el("ul", {}, v.opties.map((o) => el("li", { class: o.goed ? "goed" : "" }, o.t, o.goed ? "  ✓" : "", el("span", { class: o.goed ? "meta" : "fout" }, `  — ${o.waarom}`)))))));
+  }
+  function inhoud() {
+    const niv = document.querySelector('input[name="niv"]:checked').value;
+    const lijst = document.getElementById("inhoudlijst");
+    const groep = (titel, items) => { const d = el("details", { class: "onderdeel" }, el("summary", {}, `${titel} (${items.length})`)); items.forEach((i) => d.append(i)); return d; };
+    lijst.replaceChildren(
+      groep("Ketenpuzzel", (SET.ketens || []).filter((k) => k.niveau === niv).map(ketenItem)),
+      groep("Schema's: systemen en regelkringen", (SET.diagrammen || []).filter((d) => d.niveaus.includes(niv)).map((d) => schemaItem(d, niv))),
+      groep("Grafieken en patronen", (SET.grafieken || []).filter((g) => g.niveaus.includes(niv)).map(generatorItem)),
+      groep("Rekenen", (SET.rekenen || []).filter((g) => g.niveaus.includes(niv)).map(generatorItem)),
+      groep("Structuur, functie en verklaringen", (SET.structuur || []).filter((g) => g.niveaus.includes(niv)).map(generatorItem)),
+      groep("Welke denkwijze?", (SET.denkwijzen || []).filter((g) => g.niveaus.includes(niv)).map(generatorItem)));
+  }
+  document.querySelectorAll('input[name="niv"]').forEach((r) => r.addEventListener("change", inhoud));
+  document.getElementById("printknop").addEventListener("click", () => { document.querySelectorAll("details.onderdeel").forEach((x) => (x.open = true)); window.print(); });
+  inhoud();
 })();
 </script>
 </body>
