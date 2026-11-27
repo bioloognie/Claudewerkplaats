@@ -218,18 +218,17 @@ window.OEFENSETS.push({
       begin: "De hypothalamus stuurt via motorische zenuwen impulsen naar de skeletspieren.",
       eind: "De lichaamstemperatuur stijgt.",
       schakels: [
-        { t: "In de mitochondriën van spiercellen wordt glucose met zuurstof verbrand (dissimilatie).", niv: ["cel", "molecuul"] },
-        { t: "De vrijgekomen energie wordt vastgelegd in ATP.", niv: ["molecuul"] },
-        { t: "Met de energie uit ATP trekken de spiervezels steeds kort samen.", niv: ["cel", "weefsel"] },
+        { t: "De spiervezels trekken snel achter elkaar kort samen.", niv: ["cel", "weefsel"] },
+        { t: "Daarbij zetten de spiercellen chemische energie uit voedingsstoffen om.", niv: ["cel"] },
         { t: "Omdat de spieren niets in beweging zetten, komt vrijwel alle energie vrij als warmte.", niv: ["weefsel", "orgaan"] },
         { t: "Het bloed neemt de warmte op en verspreidt die door het lichaam.", niv: ["organisme"] },
       ],
       afleiders: [
-        { t: "Bij het rillen wordt warmte omgezet in glucose.", waarom: "Het is andersom: chemische energie uit glucose wordt uiteindelijk warmte." },
+        { t: "Door het rillen verwijden de bloedvaten in de huid.", waarom: "Bij kou vernauwen de huidvaten juist. Rillen werkt via de skeletspieren." },
         { t: "Bij het rillen gaat energie verloren en verdwijnt.", waarom: "Energie verdwijnt niet: ze wordt omgezet in warmte (behoud van energie)." },
-        { t: "ATP wordt bij het samentrekken omgezet in glucose.", waarom: "ATP levert energie en wordt daarbij omgezet in ADP en fosfaat, niet in glucose." },
+        { t: "De hypothalamus produceert zelf de warmte.", waarom: "De hypothalamus stuurt aan; de warmte komt uit de spieren." },
       ],
-      hint: "Volg de energie over de niveaus: glucose (molecuul) → ATP → spiervezel → spier → hele lichaam.",
+      hint: "Volg de energie over de niveaus: spiercel → spier → bloed → hele lichaam.",
     },
 
     {

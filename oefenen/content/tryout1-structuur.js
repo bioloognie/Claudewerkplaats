@@ -49,9 +49,9 @@ window.OEFENSETS = window.OEFENSETS || [];
       opties: ["Een antibioticum kan aan bacteriële ribosomen binden zonder de eiwitsynthese van menselijke cellen te remmen.", "Menselijke cellen hebben geen ribosomen.", "Bacteriën kunnen daardoor niet resistent worden.", "Het antibioticum maakt daardoor de menselijke ribosomen sterker."], goed: 0,
       waarom: [null, "Menselijke cellen hebben wel ribosomen.", "Resistentie kan wel ontstaan, door mutaties.", "Dat is niet hoe antibiotica werken."],
       uitleg: ["Structuurverschil op molecuulniveau.", "Het antibioticum past wel op het bacteriële ribosoom, niet op het menselijke.", "Zo werkt het selectief: de bacterie stopt, de patiënt niet."] },
-    { context: "Mitochondriën in bruin vet bevatten het eiwit UCP1. Door UCP1 wordt energie uit de verbranding niet vastgelegd in ATP, maar komt die vrij als warmte.", vraag: "Waarom past dit bij de functie van bruin vet bij een pasgeborene?",
-      opties: ["Bruin vet produceert warmte zonder spierbeweging; een baby kan nog nauwelijks rillen.", "Bruin vet slaat warmte op voor later.", "UCP1 laat bruin vet extra veel ATP maken voor de groei.", "Bruin vet voorkomt dat de baby warmte afgeeft."], goed: 0,
-      waarom: [null, "Warmte wordt niet opgeslagen maar meteen geproduceerd.", "UCP1 zorgt juist voor minder ATP.", "Bruin vet produceert warmte; het isoleert niet."],
+    { context: "Bruin vet bevat veel mitochondriën met het eiwit UCP1. Door UCP1 komt de energie uit voedingsstoffen in de mitochondriën direct vrij als warmte.", vraag: "Waarom past dit bij de functie van bruin vet bij een pasgeborene?",
+      opties: ["Bruin vet produceert warmte zonder spierbeweging; een baby kan nog nauwelijks rillen.", "Bruin vet slaat warmte op voor later.", "UCP1 laat bruin vet extra veel energie opslaan voor de groei.", "Bruin vet voorkomt dat de baby warmte afgeeft."], goed: 0,
+      waarom: [null, "Warmte wordt niet opgeslagen maar meteen geproduceerd.", "UCP1 zorgt juist dat de energie meteen als warmte vrijkomt.", "Bruin vet produceert warmte; het isoleert niet."],
       uitleg: ["Molecuul: UCP1 laat energie vrijkomen als warmte.", "Cel en weefsel: veel mitochondriën = veel warmte.", "Organisme: de baby blijft warm zonder te rillen."] },
   ];
   const CONCLUSIE = (r) => {

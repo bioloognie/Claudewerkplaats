@@ -42,7 +42,7 @@ window.OEFENSETS = window.OEFENSETS || [];
         ] },
         { niveau: "vwo", vraag: "Waarom heeft een plasmacel zoveel ER met ribosomen?", opties: [
           { t: "Antistoffen zijn eiwitten voor export; die worden aan ribosomen op het ER gemaakt.", goed: true, waarom: "Structuur past bij functie (C25): veel ER = veel productie van eiwitten die de cel verlaten." },
-          { t: "Het ER levert de ATP voor de productie van antistoffen.", waarom: "ATP komt vooral uit de mitochondriën." },
+          { t: "Het ER levert de energie voor de productie van antistoffen.", waarom: "Energie komt vooral uit de mitochondriën." },
           { t: "Ribosomen op het ER breken antigenen af.", waarom: "Ribosomen maken eiwitten. Afbraak gebeurt in lysosomen." },
           { t: "Het ER slaat antistoffen op tot het volgende contact met het antigeen.", waarom: "Het geheugen zit in geheugencellen, niet in opgeslagen antistoffen." },
         ] },
