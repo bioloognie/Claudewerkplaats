@@ -83,7 +83,50 @@
   .verborgen { display: none !important; }
   .klein-knop { padding: .3em .8em; font-size: .9rem; }
   .menu { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
-  .menukaart p { margin: .5em 0 .8em; }
+  /* dashboard */
+  :root { --goud: #D9A21B; }
+  .dashboard { display: grid; grid-template-columns: auto 1fr auto; gap: 22px; align-items: center; background: linear-gradient(135deg, var(--ink), #1B5F67 60%, var(--teal)); color: #fff; border-radius: 18px; padding: 20px 24px; margin-bottom: 14px; }
+  .dashboard .klein { color: rgba(255,255,255,.82); }
+  .dashboard .ring circle:first-child { stroke: rgba(255,255,255,.18); }
+  .dashboard .ringtekst { fill: #fff; }
+  @media (max-width: 820px) { .dashboard { grid-template-columns: 1fr; justify-items: stretch; } .db-ring { justify-self: center; } }
+  .db-ring { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .ringtekst { font-weight: 800; fill: var(--ink); font-family: var(--romp); }
+  .db-midden { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .rangnaam { font-family: var(--kop); font-size: 1.9rem; font-weight: 700; text-transform: capitalize; line-height: 1.1; }
+  .balk.dik { height: 14px; background: rgba(255,255,255,.2); }
+  .dashboard .balk > div { background: var(--goud); }
+  .db-tegels { display: flex; gap: 10px; flex-wrap: wrap; }
+  .db-tegel { background: rgba(255,255,255,.12); border-radius: 12px; padding: 8px 14px; min-width: 88px; }
+  .db-tegel b { display: block; font-size: 1.5rem; line-height: 1.1; }
+  .db-tegel span { font-size: .8rem; opacity: .85; }
+  .db-tegel.vuur b::after { content: " 🔥"; font-size: 1.1rem; }
+  .db-actie { max-width: 280px; }
+  @media (max-width: 820px) { .db-actie { max-width: none; } }
+  .knop.groot { background: var(--goud); color: var(--ink); font-size: 1.05rem; padding: .8em 1.2em; margin-top: 4px; width: 100%; text-align: left; box-shadow: 0 3px 0 rgba(0,0,0,.2); }
+  .feest { font-weight: 700; font-size: 1.05rem; margin: 0 0 12px; }
+  .dwkaart { margin-bottom: 14px; }
+  .dwlijst { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .dw { background: var(--achtergrond); border-radius: 10px; padding: 8px 10px; border: 2px solid transparent; }
+  .dw.vol { border-color: var(--goud); background: #FBF4E1; }
+  .dw-code { font-weight: 800; color: var(--ink); }
+  .dw-naam { font-size: .8rem; color: var(--grijs); min-height: 2.1em; line-height: 1.15; margin-bottom: 4px; }
+  .dw.vol .balk > div { background: var(--goud); }
+  .menukaart { display: flex; flex-direction: column; text-align: left; background: var(--wit); color: var(--tekst); border: 2px solid transparent; border-radius: 16px; padding: 16px 18px; box-shadow: 0 1px 3px rgba(20,64,74,.1); transition: transform .12s, box-shadow .12s, border-color .12s; }
+  .menukaart:hover, .menukaart:focus-visible { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(20,64,74,.14); border-color: var(--teal); outline: none; }
+  .menukaart.aanrader { border-color: var(--goud); }
+  .menukaart.klaar { background: linear-gradient(180deg, #FFFDF6, #FBF4E1); }
+  .mk-boven { display: flex; justify-content: space-between; align-items: center; }
+  .icoon { font-size: 1.7rem; width: 48px; height: 48px; display: grid; place-items: center; background: var(--teal-licht); border-radius: 14px; }
+  .status { font-size: .75rem; font-weight: 800; padding: .2em .7em; border-radius: 99px; text-transform: uppercase; letter-spacing: .03em; }
+  .s-nieuw { background: var(--koraal-licht); color: #A33A1A; }
+  .s-bezig { background: var(--teal-licht); color: var(--ink); }
+  .s-klaar { background: var(--goud); color: var(--ink); }
+  .mk-titel { font-family: var(--kop); font-size: 1.2rem; font-weight: 700; color: var(--ink); margin-top: 10px; }
+  .mk-label { font-size: .8rem; font-weight: 700; color: var(--teal); }
+  .mk-tekst { font-size: .92rem; margin: 6px 0 12px; flex: 1; }
+  .mk-onder { display: flex; gap: 12px; align-items: center; }
+  .mk-sterk { font-weight: 700; color: var(--ink); font-size: .95rem; }
   /* systeemdiagram */
   .sysdiag { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
   .ext { align-self: center; text-align: center; width: min(320px, 100%); }
@@ -196,6 +239,7 @@
     bewaar();
     laadSys();
     Object.values(GEN).forEach((o) => o.laad());
+    laadTotaal();
   }
   const bewaar = () => opslag.schrijf(sleutel, voortgang);
   const aantalBeheerst = () => ketens.filter((k) => voortgang.k[k.id].beheerst).length;
@@ -469,7 +513,7 @@
     const max = ronde.lijst.length * 3;
     const record = ronde.punten > voortgang.record;
     if (record) voortgang.record = ronde.punten;
-    bewaar();
+    bewaar(); registreerRonde("keten", ronde.punten);
     const b = aantalBeheerst(), n = ketens.length;
     const code = `${niveau === "havo" ? "H" : "V"} · ronde ${ronde.nr} · ${ronde.punten}/${max} punten · beheerst ${b}/${n}`;
     const nogTeGaan = n - b;
@@ -499,24 +543,122 @@
   // =====================================================================
   // MENU
   // =====================================================================
-  function menuKaart(titel, label, tekst, b, n, eenheid, actie, gestart) {
-    return h("div", { class: "kaart menukaart" },
-      h("div", { class: "rij" }, h("h2", { style: "margin:0" }, titel), h("span", { class: "label licht" }, label)),
-      h("p", {}, tekst),
-      h("div", { class: "klein" }, `Beheerst: ${b} van ${n} ${eenheid}`),
-      h("div", { class: "balk", style: "margin:4px 0 12px" }, h("div", { style: `width:${n ? (100 * b) / n : 0}%` })),
-      h("button", { class: "knop", onclick: actie }, gestart ? "Verder oefenen" : "Beginnen"));
+  // ---------- totaalscore, dagen, niveau ----------
+  const dwCodes = (s) => (String(s).match(/[CE]\d\d/g) || []);
+  const DW_NAAM = { C20: "patronen", C21: "oorzaak-gevolg", C22: "schaal, verhouding, hoeveelheid", C23: "systemen", C24: "behoud, kringlopen, transport", C25: "structuur-eigenschap-functie", C26: "stabiliteit en verandering", C27: "evolutionair denken", E37: "modellen", E38: "data", E39: "verbanden", E40: "wiskunde", E41: "verklaringen", E42: "informatie" };
+  const RANGEN = [[0, "molecuul"], [20, "cel"], [60, "weefsel"], [120, "orgaan"], [200, "orgaanstelsel"], [320, "organisme"], [480, "populatie"], [700, "ecosysteem"], [1000, "biosfeer"]];
+  let totSleutel = "", tot = null;
+  const vandaag = () => { const t = new Date(); return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`; };
+  function laadTotaal() {
+    totSleutel = `totaal:v1:${set.id}:${niveau}`;
+    tot = opslag.lees(totSleutel) || { punten: voortgang.totaal || 0, rondes: 0, dagen: [], laatste: null, rangGezien: 0 };
   }
+  const totBewaar = () => opslag.schrijf(totSleutel, tot);
+  function registreerRonde(code, pt) {
+    tot.punten += pt; tot.rondes++; tot.laatste = code;
+    const d = vandaag(); if (!tot.dagen.includes(d)) tot.dagen = tot.dagen.concat(d).slice(-90);
+    totBewaar();
+  }
+  function dagenOpRij() {
+    const set_ = new Set(tot.dagen); let n = 0; const t = new Date();
+    if (!set_.has(vandaag())) t.setDate(t.getDate() - 1);   // vandaag nog niet geoefend: reeks telt t/m gisteren
+    for (;;) { const k = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`; if (!set_.has(k)) break; n++; t.setDate(t.getDate() - 1); }
+    return n;
+  }
+  const rangVan = (p) => { let i = 0; RANGEN.forEach((r, j) => { if (p >= r[0]) i = j; }); return i; };
+
+  // alle onderdelen in één lijst
+  function onderdelen() {
+    const lijst = [
+      { code: "keten", titel: "Ketenpuzzel", label: "C21 · C24 · C27", icoon: "🔗", tekst: "Bouw oorzaak-gevolgketens tussen een begin en een eind, en haal de foute schakels eruit.",
+        b: aantalBeheerst(), n: ketens.length, eenheid: "ketens", start, gestart: voortgang.rondes > 0, record: voortgang.record,
+        items: ketens.map((k) => ({ dw: dwCodes(k.denkwijze), b: voortgang.k[k.id].beheerst })) },
+      { code: "systeem", titel: "Schema's: systemen en regelkringen", label: "C23 · C26", icoon: "🔄", tekst: "Vul systeemdiagrammen en regelkringen in en voorspel wat een verstoring doet.",
+        b: sysBeheerst(), n: diagrammen.length, eenheid: "schema's", start: sysStart, gestart: sysVg.rondes > 0, record: sysVg.record,
+        items: diagrammen.map((x) => ({ dw: [x.vorm === "regelkring" ? "C26" : "C23"], b: sysVg.d[x.id].beheerst })) },
+    ];
+    const ICOON = { grafiek: "📈", reken: "🧮", structuur: "🔬", denkwijze: "🧭" };
+    Object.values(GEN).forEach((o) => lijst.push({ code: o.cfg.code, titel: o.cfg.titel, label: o.cfg.label, icoon: ICOON[o.cfg.code] || "★", tekst: o.cfg.menuTekst,
+      b: o.beheerst(), n: o.aantal(), eenheid: o.cfg.eenheid, start: o.start, gestart: o.gestart(), record: o.record(), items: o.items() }));
+    return lijst.filter((x) => x.n > 0);
+  }
+  function ring(frac, maat, dikte, tekst) {
+    const r = (maat - dikte) / 2, omtrek = 2 * Math.PI * r;
+    const ns = "http://www.w3.org/2000/svg", el = (t, a) => { const e = document.createElementNS(ns, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+    const svg = el("svg", { viewBox: `0 0 ${maat} ${maat}`, width: maat, height: maat, class: "ring", role: "img", "aria-label": tekst });
+    svg.append(el("circle", { cx: maat / 2, cy: maat / 2, r, fill: "none", stroke: "var(--teal-mid)", "stroke-width": dikte }));
+    if (frac > 0) svg.append(el("circle", { cx: maat / 2, cy: maat / 2, r, fill: "none", stroke: frac >= 1 ? "var(--goud)" : "var(--teal)", "stroke-width": dikte, "stroke-linecap": "round",
+      "stroke-dasharray": `${(omtrek * Math.min(frac, 1)).toFixed(1)} ${omtrek.toFixed(1)}`, transform: `rotate(-90 ${maat / 2} ${maat / 2})` }));
+    const t = el("text", { x: "50%", y: "50%", "text-anchor": "middle", "dominant-baseline": "central", class: "ringtekst", "font-size": maat * 0.24 }); t.textContent = tekst; svg.append(t);
+    return svg;
+  }
+
+  function menuKaart(x, aanrader) {
+    const klaar = x.b === x.n, status = klaar ? "✓ alles beheerst" : x.gestart ? "bezig" : "nieuw";
+    return h("button", { class: "menukaart" + (klaar ? " klaar" : "") + (aanrader ? " aanrader" : ""), onclick: x.start, "aria-label": `${x.titel}: ${x.b} van ${x.n} ${x.eenheid} beheerst` },
+      h("div", { class: "mk-boven" },
+        h("span", { class: "icoon", "aria-hidden": "true" }, x.icoon),
+        h("span", { class: "status " + (klaar ? "s-klaar" : x.gestart ? "s-bezig" : "s-nieuw") }, status)),
+      h("div", { class: "mk-titel" }, x.titel),
+      h("div", { class: "mk-label" }, x.label),
+      h("div", { class: "mk-tekst" }, x.tekst),
+      h("div", { class: "mk-onder" },
+        ring(x.n ? x.b / x.n : 0, 54, 7, `${x.b}/${x.n}`),
+        h("div", {}, h("div", { class: "mk-sterk" }, `${x.b} van ${x.n} ${x.eenheid}`), h("div", { class: "klein" }, x.record ? `record ${x.record} punten per ronde` : "nog niet geoefend"))));
+  }
+
   function menu() {
+    const lijst = onderdelen();
+    const B = lijst.reduce((s, x) => s + x.b, 0), N = lijst.reduce((s, x) => s + x.n, 0);
+    const ri = rangVan(tot.punten), rang = RANGEN[ri][1], volgende = RANGEN[ri + 1];
+    const nieuwRang = ri > (tot.rangGezien || 0); if (nieuwRang) { tot.rangGezien = ri; totBewaar(); }
+    const reeks = dagenOpRij(), vandaagGedaan = tot.dagen.includes(vandaag());
+    // aanrader: ga verder waar je was; anders het onderdeel met het laagste percentage
+    const open = lijst.filter((x) => x.b < x.n);
+    const laatste = open.find((x) => x.code === tot.laatste);
+    const aanrader = laatste || open.slice().sort((p, q) => p.b / p.n - q.b / q.n)[0] || null;
+    // denkwijzen-overzicht
+    const dw = {};
+    lijst.forEach((x) => x.items.forEach((it) => it.dw.forEach((c) => { dw[c] = dw[c] || { b: 0, n: 0 }; dw[c].n++; if (it.b) dw[c].b++; })));
+    const dwCodesLijst = Object.keys(DW_NAAM).filter((c) => dw[c]);
+    const code = `${niveau === "havo" ? "H" : "V"} · totaal · ${tot.punten} punten · beheerst ${B}/${N} · niveau ${rang}`;
+
     $app.replaceChildren(
       h("div", { class: "kopbalk" }, h("div", {},
         h("h1", {}, "Oefenen met denk- en werkwijzen"),
         h("div", { class: "rij" }, h("span", { class: "label" }, niveau.toUpperCase()), h("span", { class: "klein" }, set.titel)))),
-      h("div", { class: "menu" },
-        menuKaart("Ketenpuzzel", "C21 oorzaak-gevolg", "Bouw oorzaak-gevolgketens tussen een begin en een eind, en haal de foute schakels eruit.", aantalBeheerst(), ketens.length, "ketens", start, voortgang.rondes > 0),
-        diagrammen.length ? menuKaart("Schema's: systemen en regelkringen", "C23 · C26", "Vul systeemdiagrammen en regelkringen in: grens, onderdelen, input en output, sensor, regelcentrum en effector. Voorspel daarna wat een verstoring doet.", sysBeheerst(), diagrammen.length, "schema's", sysStart, sysVg.rondes > 0) : null,
-        Object.values(GEN).filter((o) => o.aantal()).map((o) => menuKaart(o.cfg.titel, o.cfg.label, o.cfg.menuTekst, o.beheerst(), o.aantal(), o.cfg.eenheid, o.start, o.gestart()))),
-      !niveauVast ? h("div", { class: "rij", style: "margin-top:14px" }, h("button", { class: "knop tweede", onclick: niveauScherm }, "Ander niveau")) : "");
+      nieuwRang ? h("div", { class: "melding top feest" }, `Nieuw niveau bereikt: ${rang}! `, ri < RANGEN.length - 1 ? `Op naar ${RANGEN[ri + 1][1]}.` : "Hoger kan niet.") : "",
+      h("div", { class: "dashboard" },
+        h("div", { class: "db-ring" }, ring(N ? B / N : 0, 132, 14, `${N ? Math.round((100 * B) / N) : 0}%`),
+          h("div", { class: "klein", style: "text-align:center" }, `${B} van ${N} oefeningen beheerst`)),
+        h("div", { class: "db-midden" },
+          h("div", { class: "db-rang" }, h("span", { class: "klein" }, "Jouw niveau"), h("div", { class: "rangnaam" }, rang)),
+          volgende ? h("div", {},
+            h("div", { class: "balk dik" }, h("div", { style: `width:${(100 * (tot.punten - RANGEN[ri][0])) / (volgende[0] - RANGEN[ri][0])}%` })),
+            h("div", { class: "klein" }, `nog ${volgende[0] - tot.punten} punten tot ${volgende[1]}`)) : h("div", { class: "klein" }, "Hoogste niveau bereikt."),
+          h("div", { class: "db-tegels" },
+            h("div", { class: "db-tegel" }, h("b", {}, tot.punten), h("span", {}, "punten")),
+            h("div", { class: "db-tegel" }, h("b", {}, tot.rondes), h("span", {}, tot.rondes === 1 ? "ronde" : "rondes")),
+            h("div", { class: "db-tegel" + (reeks >= 2 ? " vuur" : "") }, h("b", {}, reeks), h("span", {}, reeks === 1 ? "dag op rij" : "dagen op rij")))),
+        h("div", { class: "db-actie" },
+          aanrader ? h("div", {},
+            h("div", { class: "klein" }, laatste ? "Ga verder waar je was" : tot.rondes ? "Aanrader" : "Begin hier"),
+            h("button", { class: "knop groot", onclick: aanrader.start }, `${aanrader.icoon} ${aanrader.titel}`),
+            h("div", { class: "klein", style: "margin-top:6px" }, vandaagGedaan ? "Je hebt vandaag al geoefend. Eén ronde extra?" : reeks ? `Oefen vandaag om je reeks van ${reeks} ${reeks === 1 ? "dag" : "dagen"} vast te houden.` : "Eén ronde duurt ongeveer 5 minuten."))
+          : h("div", { class: "melding top" }, "Je beheerst alles! Herhaal af en toe een ronde om het vers te houden."))),
+      h("div", { class: "kaart dwkaart" },
+        h("h2", {}, "Zo sta je ervoor per denk- en werkwijze"),
+        h("div", { class: "dwlijst" }, dwCodesLijst.map((c) => {
+          const f = dw[c].b / dw[c].n;
+          return h("div", { class: "dw" + (f >= 1 ? " vol" : ""), title: `${c} ${DW_NAAM[c]}: ${dw[c].b} van ${dw[c].n} beheerst` },
+            h("div", { class: "dw-code" }, c), h("div", { class: "dw-naam" }, DW_NAAM[c]),
+            h("div", { class: "balk" }, h("div", { style: `width:${100 * f}%` })));
+        }))),
+      h("div", { class: "menu" }, lijst.map((x) => menuKaart(x, x === aanrader))),
+      h("div", { class: "kaart", style: "margin-top:14px" },
+        h("div", { class: "klein" }, "Code voor Learnbeat (totaaloverzicht):"), h("div", { class: "code" }, code),
+        h("p", { class: "klein", style: "margin:10px 0 0" }, "Je voortgang wordt alleen in deze browser op dit apparaat bewaard. Op een ander apparaat, in een privévenster of na het wissen van je browsergegevens begin je opnieuw."),
+        !niveauVast ? h("div", { class: "rij", style: "margin-top:10px" }, h("button", { class: "knop tweede", onclick: niveauScherm }, "Ander niveau")) : ""));
   }
 
   // =====================================================================
@@ -729,7 +871,7 @@
   function sysEinde() {
     const record = sr.punten > sysVg.record;
     if (record) sysVg.record = sr.punten;
-    sysBewaar();
+    sysBewaar(); registreerRonde("systeem", sr.punten);
     const b = sysBeheerst(), n = diagrammen.length, rest = n - b;
     const code = `${niveau === "havo" ? "H" : "V"} · systeem · ronde ${sr.nr} · ${sr.punten}/${sr.max} punten · beheerst ${b}/${n}`;
     $app.replaceChildren(
@@ -851,6 +993,8 @@
     o.beheerst = () => lijst.filter((g) => vg.g[g.id].beheerst).length;
     o.aantal = () => lijst.length;
     o.gestart = () => vg.rondes > 0;
+    o.record = () => vg.record;
+    o.items = () => lijst.map((g) => ({ dw: dwCodes(g.denkwijze === "herkennen" ? g.id : g.denkwijze), b: vg.g[g.id].beheerst }));
     const kopO = () => kopAlg(cfg.titel, cfg.label, o.beheerst(), lijst.length, cfg.eenheid);
 
     o.start = () => {
@@ -982,7 +1126,7 @@
     function einde() {
       const max = r.lijst.length * 2;
       const record = r.punten > vg.record; if (record) vg.record = r.punten;
-      bewaarO();
+      bewaarO(); registreerRonde(cfg.code, r.punten);
       const b = o.beheerst(), n = lijst.length, rest = n - b;
       const code = `${niveau === "havo" ? "H" : "V"} · ${cfg.code} · ronde ${r.nr} · ${r.punten}/${max} punten · beheerst ${b}/${n}`;
       $app.replaceChildren(kopO(),
