@@ -113,13 +113,19 @@
   .optie:disabled { cursor: default; color: var(--tekst); }
   .optie-uitleg { font-size: .92rem; padding: 4px 12px 2px; color: #8A2E14; }
   .optie-uitleg.goed { color: #1F5E36; }
+  .grafiekvak { overflow-x: auto; background: #fff; border: 1px solid var(--lijn); border-radius: 12px; padding: 6px; margin-top: 6px; }
+  .legenda { display: flex; gap: 18px; flex-wrap: wrap; font-size: .9rem; padding: 4px 10px 6px; }
+  .legstip { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .grafiek { width: 100%; min-width: 520px; height: auto; display: block; font-family: var(--romp); }
+  .getalinvoer { font: inherit; font-size: 1.1rem; padding: 8px 10px; width: 180px; border-radius: 8px; border: 2px solid var(--lijn); }
+  .getalinvoer:focus { outline: none; border-color: var(--teal); }
 </style>
 </head>
 <body>
 <div class="wrap" id="app"></div>
 
 <!-- Oefenstof: voeg hier later een bestand per thema toe (bijv. content/tryout2-eiwitsynthese.js) -->
-<!-- ============ OEFENSTOF (hier kun je ketens en diagrammen aanpassen of toevoegen) ============ -->
+<!-- ============ OEFENSTOF (hier kun je ketens, diagrammen en grafieken aanpassen of toevoegen) ============ -->
 <script>
 /* Oefenstof try-out 1 — afweer (ET16), reproductie virussen en bacteriën (ET12), thermoregulatie (ET18)
    Elke keten: schakels in vaste volgorde (géén verwisselbare stappen), afleiders met uitleg.
@@ -639,6 +645,168 @@ window.OEFENSETS = window.OEFENSETS || [];
   ];
 })();
 </script>
+<script>
+/* Grafiekoefeningen (C20 patronen, C22, E38 data, E39 verbanden) try-out 1.
+   Elke generator maakt bij elke aanroep een nieuwe variant met andere getallen.
+   maak(r) geeft: { context, grafiek, vraag, soort: "mc"|"getal", opties, goed (mc: index) | antwoord + marge (getal), eenheid, uitleg: [stappen] }
+   r.kies(lijst), r.int(a, b), r.getal(a, b) zijn toevalshulpjes. */
+window.OEFENSETS = window.OEFENSETS || [];
+(function () {
+  const set = window.OEFENSETS.find((s) => s.id === "tryout1");
+  const reeks = (a, b, stap, f) => { const p = []; for (let x = a; x <= b + 1e-9; x += stap) p.push([x, f(x)]); return p; };
+  const logistisch = (K, N0, r) => (t) => K / (1 + ((K - N0) / N0) * Math.exp(-r * t));
+  const PATRONEN = ["toenemend (lineair)", "exponentieel toenemend", "eerst exponentieel toenemend, daarna constant", "afnemend", "constant", "periodiek"];
+  const titer = (a, b) => (d) => {
+    // schematische antistofcurve: eerste contact dag 0 (top 10^a), tweede contact dag 30 (top 10^(a+b))
+    if (d < 4) return 1;
+    if (d <= 14) return Math.pow(10, (a * (d - 4)) / 10);
+    if (d < 30) return Math.pow(10, a - (d - 14) / 16);
+    if (d <= 32) return Math.pow(10, a - 1);
+    if (d <= 38) return Math.pow(10, a - 1 + ((b + 1) * (d - 32)) / 6);
+    return Math.pow(10, a + b - (d - 38) / 44);
+  };
+
+  set.grafieken = [
+    {
+      id: "g-patroon", niveaus: ["havo", "vwo"], titel: "Welk patroon zie je?", denkwijze: "C20",
+      maak(r) {
+        const sc = r.kies(["exp", "sig", "per", "afn", "con"]);
+        if (sc === "exp") {
+          const td = r.kies([30, 40, 45]), N0 = r.kies([100, 200]);
+          return { context: "Onderzoekers tellen elk kwartier het aantal bacteriën in een ruime voedingsbodem bij 37 °C.",
+            grafiek: { x: { min: 0, max: 180, stap: 30, label: "tijd (min)" }, y: { min: 0, label: "aantal bacteriën" }, series: [{ punten: reeks(0, 180, 15, (t) => N0 * Math.pow(2, t / td)), punten_tonen: true }] },
+            vraag: "Welk patroon past het best bij deze grafiek?", soort: "mc", opties: PATRONEN, goed: 1,
+            uitleg: ["De toename wordt steeds groter.", `In gelijke tijd (hier ${td} minuten) verdubbelt het aantal steeds.`, "Verdubbelen in gelijke tijd = exponentieel toenemend."] };
+        }
+        if (sc === "sig") {
+          const f = logistisch(800, 5, r.kies([0.45, 0.5, 0.55]));
+          return { context: "Bacteriën groeien 24 uur lang in een klein afgesloten buisje met weinig voedingsstoffen.",
+            grafiek: { x: { min: 0, max: 24, stap: 4, label: "tijd (uur)" }, y: { min: 0, max: 1000, stap: 200, label: "aantal (× 1 000)" }, series: [{ punten: reeks(0, 24, 1, f), punten_tonen: true }] },
+            vraag: "Welk patroon past het best bij deze grafiek?", soort: "mc", opties: PATRONEN, goed: 2,
+            uitleg: ["Eerst verdubbelt het aantal steeds: exponentieel.", "Daarna raken voedingsstoffen op en hopen afvalstoffen zich op: de groei stopt.", "Samen geeft dat een S-vormige (sigmoïde) kromme: eerst exponentieel toenemend, daarna constant."] };
+        }
+        if (sc === "per") {
+          const gem = r.kies([36.8, 36.9, 37.0]);
+          return { context: "De lichaamstemperatuur van een gezonde student wordt drie dagen lang elke twee uur gemeten (tijd 0 = middernacht).",
+            grafiek: { x: { min: 0, max: 72, stap: 12, label: "tijd (uur)" }, y: { min: 36, max: 38, stap: 0.5, label: "temperatuur (°C)" }, series: [{ punten: reeks(0, 72, 2, (t) => gem + 0.35 * Math.sin((2 * Math.PI * (t - 11)) / 24)), punten_tonen: true }] },
+            vraag: "Welk patroon past het best bij deze grafiek?", soort: "mc", opties: PATRONEN, goed: 5,
+            uitleg: ["De temperatuur gaat steeds op en neer.", "Het patroon herhaalt zich elke 24 uur: laag in de vroege ochtend, hoog in de middag.", "Een patroon dat zich regelmatig herhaalt, heet periodiek (een dag-nachtritme)."] };
+        }
+        if (sc === "afn") {
+          const start = r.kies([80, 100, 120]);
+          return { context: "Iemand krijgt antistoffen ingespoten (passieve immunisatie). De concentratie in het bloed wordt wekenlang gemeten.",
+            grafiek: { x: { min: 0, max: 15, stap: 3, label: "tijd (weken)" }, y: { min: 0, max: 140, stap: 20, label: "antistof (willekeurige eenheid)" }, series: [{ punten: reeks(0, 15, 1, (t) => start * Math.pow(0.5, t / 3)), punten_tonen: true }] },
+            vraag: "Welk patroon past het best bij deze grafiek?", soort: "mc", opties: PATRONEN, goed: 3,
+            uitleg: ["De concentratie wordt steeds lager.", "De ingespoten antistoffen worden afgebroken, en er komen er geen nieuwe bij: het lichaam maakt ze niet zelf.", "Het patroon is afnemend."] };
+        }
+        const gem = r.kies([36.9, 37.0, 37.1]);
+        const ruis = [0.04, -0.03, 0.02, -0.05, 0.03, 0, -0.02, 0.05, -0.04, 0.01, 0.03, -0.01, 0.02];
+        return { context: "Tijdens een les van een uur wordt elke 5 minuten de lichaamstemperatuur van een leerling gemeten.",
+          grafiek: { x: { min: 0, max: 60, stap: 10, label: "tijd (min)" }, y: { min: 36, max: 38, stap: 0.5, label: "temperatuur (°C)" }, series: [{ punten: reeks(0, 60, 5, (t) => gem + ruis[t / 5]), punten_tonen: true }] },
+          vraag: "Welk patroon past het best bij deze grafiek?", soort: "mc", opties: PATRONEN, goed: 4,
+          uitleg: ["De metingen schommelen een paar honderdste graad.", "Zulke kleine verschillen passen bij toeval en meetonzekerheid.", "Het patroon is constant: de temperatuur wordt in een regelkring rond de normwaarde gehouden."] };
+      },
+    },
+    {
+      id: "g-verdubbeling", niveaus: ["havo", "vwo"], titel: "Verdubbelingstijd aflezen", denkwijze: "C22 · E38",
+      maak(r) {
+        const td = r.kies([20, 25, 30, 40]), N0 = r.kies([500, 1000, 2000]);
+        const tmax = 4 * td;
+        return { context: "Een bacteriesoort groeit onder ideale omstandigheden. De grafiek toont het aantal bacteriën.",
+          grafiek: { x: { min: 0, max: tmax, stap: 10, label: "tijd (min)", fijn: 5 }, y: { min: 0, max: 16 * N0, stap: 2 * N0, fijnStap: N0, label: "aantal bacteriën" }, series: [{ punten: reeks(0, tmax, 2.5, (t) => N0 * Math.pow(2, t / td)) }] },
+          vraag: "Bepaal met de grafiek de verdubbelingstijd.", soort: "getal", antwoord: td, marge: 3, eenheid: "min",
+          uitleg: [`Lees het beginaantal af: bij t = 0 zijn er ${N0.toLocaleString("nl-NL")} bacteriën.`, `Zoek het tijdstip waarop het aantal is verdubbeld tot ${(2 * N0).toLocaleString("nl-NL")}: dat is bij t ≈ ${td} min.`, `De verdubbelingstijd is dus ${td} minuten. Controle: na ${2 * td} min zijn er ${(4 * N0).toLocaleString("nl-NL")}.`] };
+      },
+    },
+    {
+      id: "g-logas", niveaus: ["havo", "vwo"], titel: "Aflezen op een logaritmische as", denkwijze: "E38",
+      maak(r) {
+        const a = r.kies([2, 3]), b = r.kies([1, 2]);
+        const f = titer(a, b);
+        return { context: "Iemand krijgt op dag 0 en op dag 30 een injectie met hetzelfde antigeen. De grafiek toont de antistofconcentratie (schematisch). Let op de verticale as.",
+          grafiek: { x: { min: 0, max: 60, stap: 10, label: "tijd (dagen)" }, y: { log: true, min: 1, max: Math.pow(10, a + b + 1), label: "antistof (willekeurige eenheid)" }, series: [{ punten: reeks(0, 60, 1, f) }], pijlen: [{ x: 0, tekst: "1e injectie" }, { x: 30, tekst: "2e injectie" }] },
+          vraag: "Hoeveel keer zo hoog is de hoogste concentratie na de tweede injectie als na de eerste?", soort: "getal", antwoord: Math.pow(10, b), marge: 0, eenheid: "keer",
+          uitleg: [`Eerste top: ${fmt(Math.pow(10, a))}.`, `Tweede top: ${fmt(Math.pow(10, a + b))}.`, `Op een logaritmische as is elke volgende streep ×10. De toppen liggen ${b} ${b === 1 ? "streep" : "strepen"} uit elkaar: ${fmt(Math.pow(10, b))} keer zo hoog.`, "Biologisch: geheugencellen van het eerste contact zorgen voor een snellere en sterkere secundaire reactie."] };
+      },
+    },
+    {
+      id: "g-doorrekenen", niveaus: ["havo", "vwo"], titel: "Als het patroon doorzet…", denkwijze: "C20 · C22",
+      maak(r) {
+        const td = r.kies([15, 20, 30]), N0 = r.kies([100, 200, 500]), T = r.kies([2, 3]);
+        const n = (T * 60) / td, N = N0 * Math.pow(2, n);
+        return { context: `De grafiek toont het eerste uur van de groei van een bacteriepopulatie. De verdubbelingstijd is ${td} minuten.`,
+          grafiek: { x: { min: 0, max: 60, stap: 10, label: "tijd (min)" }, y: { min: 0, label: "aantal bacteriën" }, series: [{ punten: reeks(0, 60, 5, (t) => N0 * Math.pow(2, t / td)), punten_tonen: true }] },
+          vraag: `Bereken hoeveel bacteriën er na ${T} uur zijn als dit patroon doorzet.`, soort: "getal", antwoord: N, marge: 0.02 * N, eenheid: "bacteriën",
+          uitleg: [`Lees het beginaantal af: ${N0.toLocaleString("nl-NL")}.`, `Aantal verdubbelingen: ${T * 60} min ÷ ${td} min = ${n}.`, `Aantal = ${N0.toLocaleString("nl-NL")} × 2^${n} = ${N.toLocaleString("nl-NL")}.`, "In werkelijkheid zet het patroon niet eindeloos door: voedingsstoffen raken op (sigmoïde groei)."] };
+      },
+    },
+    {
+      id: "g-uitschieter", niveaus: ["havo", "vwo"], titel: "Past deze meting in het patroon?", denkwijze: "C20 · E38",
+      maak(r) {
+        const tijden = [0, 2, 4, 6, 8, 10, 12];
+        const i = r.int(1, 5), d = r.kies([1.0, -1.0]);
+        const pnt = tijden.map((t, k) => [t, Math.round((39.5 - (2.5 * t) / 12 + (k === i ? d : 0)) * 10) / 10]);
+        const kandidaten = [i, ...[1, 2, 3, 4, 5].filter((k) => k !== i).sort(() => Math.random() - 0.5).slice(0, 3)].sort((p, q) => p - q);
+        return { context: "Bij iemand die herstelt van koorts wordt elke twee uur de lichaamstemperatuur gemeten.",
+          grafiek: { x: { min: 0, max: 12, stap: 2, label: "tijd (uur)" }, y: { min: 36, max: 41, stap: 1, fijnStap: 0.5, label: "temperatuur (°C)" }, series: [{ punten: pnt, alleenPunten: true }] },
+          vraag: "Welke meting past niet in het patroon?", soort: "mc", opties: kandidaten.map((k) => `de meting na ${tijden[k]} uur`), goed: kandidaten.indexOf(i),
+          uitleg: ["De metingen liggen op een vloeiend dalende lijn: de koorts zakt geleidelijk.", `De meting na ${tijden[i]} uur ligt ${Math.abs(d)} °C ${d > 0 ? "boven" : "onder"} die lijn.`, "Zo'n afwijking past niet in het patroon: waarschijnlijk toeval of een meetfout. Herhaal de meting en noem de afwijking, in plaats van haar stilletjes weg te laten."] };
+      },
+    },
+    {
+      id: "g-fout", niveaus: ["vwo"], titel: "Systematische of toevallige fout?", denkwijze: "E38",
+      maak(r) {
+        const syst = r.kies([true, false]);
+        const ref = (t) => 37 + 0.3 * Math.sin(t / 3);
+        const afw = [0.3, -0.25, 0.1, -0.35, 0.2, -0.1, 0.35, -0.2, 0.05, -0.3, 0.25];
+        const verschuiving = r.kies([0.5, 0.6, -0.5]);
+        const gemeten = reeks(0, 20, 2, (t) => ref(t) + (syst ? verschuiving : afw[t / 2]));
+        return { context: "Een nieuwe oorthermometer wordt getest naast een nauwkeurige referentiethermometer. Beide meten elke twee minuten bij dezelfde persoon.",
+          grafiek: { x: { min: 0, max: 20, stap: 4, label: "tijd (min)" }, y: { min: 36, max: 38, stap: 0.5, label: "temperatuur (°C)" }, series: [{ punten: reeks(0, 20, 2, ref), naam: "referentie" }, { punten: gemeten, alleenPunten: true, naam: "nieuwe thermometer", kleur: "koraal" }] },
+          vraag: "Welk soort fout maakt de nieuwe thermometer?", soort: "mc", opties: ["een systematische fout", "een toevallige fout", "geen fout"], goed: syst ? 0 : 1,
+          uitleg: syst
+            ? ["Alle metingen van de nieuwe thermometer wijken in dezelfde richting en evenveel af.", `Ze liggen steeds ongeveer ${Math.abs(verschuiving)} °C ${verschuiving > 0 ? "te hoog" : "te laag"}.`, "Een afwijking die steeds even groot en in dezelfde richting is, is een systematische fout. Herhalen helpt niet; ijken wel."]
+            : ["De metingen wijken soms naar boven en soms naar beneden af.", "Er is geen vaste richting of grootte.", "Dat is een toevallige fout. Herhalen en middelen maakt de uitkomst betrouwbaarder."] };
+      },
+    },
+    {
+      id: "g-verband", niveaus: ["havo", "vwo"], titel: "Wat voor verband?", denkwijze: "E39",
+      maak(r) {
+        const lin = r.kies([true, false]);
+        if (lin) {
+          const v = r.kies([0.3, 0.35, 0.4]);
+          return { context: "Iemand meet een maand lang hoe lang een haar is gegroeid sinds het knippen.",
+            grafiek: { x: { min: 0, max: 30, stap: 5, label: "tijd (dagen)" }, y: { min: 0, max: 14, stap: 2, label: "groei (mm)" }, series: [{ punten: reeks(0, 30, 3, (t) => v * t), punten_tonen: true }] },
+            vraag: "Welk verband is er tussen de tijd en de groei?", soort: "mc", opties: ["lineair", "exponentieel", "sigmoïde", "omgekeerd evenredig"], goed: 0,
+            uitleg: ["Let eerst op de assen: beide zijn gewone (lineaire) assen.", `De lijn is recht: elke dag komt er evenveel bij (ongeveer ${String(v).replace(".", ",")} mm).`, "Een rechte lijn op lineaire assen is een lineair verband."] };
+        }
+        const td = r.kies([20, 30]);
+        return { context: "In een experiment wordt het aantal virusdeeltjes in een celkweek gemeten. Let op de verticale as.",
+          grafiek: { x: { min: 0, max: 12, stap: 2, label: "tijd (uur)" }, y: { log: true, min: 100, max: 1e9, label: "aantal virusdeeltjes" }, series: [{ punten: reeks(0, 12, 1, (t) => 1000 * Math.pow(2, (t * 60) / (td * 3))), punten_tonen: true }] },
+          vraag: "Welk verband is er tussen de tijd en het aantal virusdeeltjes?", soort: "mc", opties: ["lineair", "exponentieel", "sigmoïde", "omgekeerd evenredig"], goed: 1,
+          uitleg: ["Let eerst op de assen: de verticale as is logaritmisch (elke streep ×10).", "De punten liggen op een rechte lijn.", "Een rechte lijn op een logaritmische as betekent: in gelijke tijd steeds hetzelfde aantal keer zo veel. Dat is een exponentieel verband."] };
+      },
+    },
+    {
+      id: "g-sigmoide", niveaus: ["havo", "vwo"], titel: "Sigmoïde groei: welke periode?", denkwijze: "C22 · E39",
+      maak(r) {
+        const f = logistisch(800, 5, 0.5);
+        const vraagSoort = r.kies(["absoluut", "absoluut", "remming"]);
+        const banden = [{ x1: 0, x2: 6, tekst: "A" }, { x1: 8, x2: 14, tekst: "B" }, { x1: 18, x2: 24, tekst: "C" }];
+        const g = { x: { min: 0, max: 24, stap: 4, label: "tijd (uur)" }, y: { min: 0, max: 1000, stap: 200, label: "aantal (× 1 000)" }, series: [{ punten: reeks(0, 24, 0.5, f) }], banden };
+        if (vraagSoort === "remming")
+          return { context: "Bacteriën groeien 24 uur lang in een klein afgesloten buisje met weinig voedingsstoffen.", grafiek: g,
+            vraag: "In welke periode remmen gebrek aan voedingsstoffen en ophoping van afvalstoffen de groei het sterkst?", soort: "mc", opties: ["periode A", "periode B", "periode C"], goed: 2,
+            uitleg: ["In periode C is de grafiek bijna vlak: er komen nauwelijks bacteriën bij.", "Er zijn dan veel bacteriën, maar weinig voedingsstoffen en veel afvalstoffen.", "De groei wordt daar het sterkst geremd."] };
+        return { context: "Bacteriën groeien 24 uur lang in een klein afgesloten buisje met weinig voedingsstoffen.", grafiek: g,
+          vraag: "In welke periode komen er per uur de meeste bacteriën bij?", soort: "mc", opties: ["periode A", "periode B", "periode C"], goed: 1,
+          uitleg: ["Waar de grafiek het steilst loopt, komen er per uur de meeste bacteriën bij: in periode B.", "In A verdubbelt het aantal wel snel, maar het gaat om kleine aantallen: weinig bacteriën per uur erbij.", "In C remmen gebrek aan voedsel en afvalstoffen de groei. Let dus op het verschil tussen ‘snel verdubbelen’ en ‘veel erbij per uur’ (C22)."] };
+      },
+    },
+  ];
+  function fmt(x) { const m = { 1: "10", 2: "100", 3: "1 000", 4: "10⁴", 5: "10⁵", 6: "10⁶" }; const e = Math.round(Math.log10(x)); return m[e] || "10^" + e; }
+})();
+</script>
 <!-- ============ EINDE OEFENSTOF ============ -->
 
 <script>
@@ -678,8 +846,8 @@ window.OEFENSETS = window.OEFENSETS || [];
   const set = sets.find((s) => s.id === params.get("thema")) || sets[0];
   let niveau = ["havo", "vwo"].includes(params.get("niveau")) ? params.get("niveau") : null;
   const niveauVast = !!niveau;
-  const vastOnderdeel = ["keten", "systeem"].includes(params.get("onderdeel")) ? params.get("onderdeel") : null;
-  const naarStart = () => (vastOnderdeel === "keten" ? start() : vastOnderdeel === "systeem" ? sysStart() : menu());
+  const vastOnderdeel = ["keten", "systeem", "grafiek"].includes(params.get("onderdeel")) ? params.get("onderdeel") : null;
+  const naarStart = () => (vastOnderdeel === "keten" ? start() : vastOnderdeel === "systeem" ? sysStart() : vastOnderdeel === "grafiek" ? grStart() : menu());
   const menuKnop = () => (vastOnderdeel ? null : h("button", { class: "knop tweede klein-knop", onclick: menu }, "← Menu"));
 
   let ketens = [], sleutel = "", voortgang = null;
@@ -691,6 +859,7 @@ window.OEFENSETS = window.OEFENSETS || [];
     ketens.forEach((k) => { if (!voortgang.k[k.id]) voortgang.k[k.id] = { stap: 1, beheerst: false, gemist: 0, laatst: -1 }; });
     bewaar();
     laadSys();
+    laadGraf();
   }
   const bewaar = () => opslag.schrijf(sleutel, voortgang);
   const aantalBeheerst = () => ketens.filter((k) => voortgang.k[k.id].beheerst).length;
@@ -711,7 +880,7 @@ window.OEFENSETS = window.OEFENSETS || [];
   function niveauScherm() {
     $app.replaceChildren(
       h("h1", {}, "Oefenen met denk- en werkwijzen"),
-      h("p", {}, "Oefen met oorzaak-gevolgketens en systeemdiagrammen over afweer, virussen en bacteriën en thermoregulatie. Kies je niveau."),
+      h("p", {}, "Oefen met oorzaak-gevolgketens, systeemdiagrammen en grafieken over afweer, virussen en bacteriën en thermoregulatie. Kies je niveau."),
       h("div", { class: "niveaukeuze" },
         h("button", { class: "knop", onclick: () => { laadNiveau("havo"); naarStart(); } }, "havo"),
         h("button", { class: "knop", onclick: () => { laadNiveau("vwo"); naarStart(); } }, "vwo")));
@@ -1009,7 +1178,8 @@ window.OEFENSETS = window.OEFENSETS || [];
         h("div", { class: "rij" }, h("span", { class: "label" }, niveau.toUpperCase()), h("span", { class: "klein" }, set.titel)))),
       h("div", { class: "menu" },
         menuKaart("Ketenpuzzel", "C21 oorzaak-gevolg", "Bouw oorzaak-gevolgketens tussen een begin en een eind, en haal de foute schakels eruit.", aantalBeheerst(), ketens.length, "ketens", start, voortgang.rondes > 0),
-        diagrammen.length ? menuKaart("Systeemdiagram", "C23 systemen", "Vul systeemdiagrammen in: grens, deelsystemen, input, output en externe factor. Voorspel daarna wat een verstoring doet.", sysBeheerst(), diagrammen.length, "diagrammen", sysStart, sysVg.rondes > 0) : null),
+        diagrammen.length ? menuKaart("Systeemdiagram", "C23 systemen", "Vul systeemdiagrammen in: grens, deelsystemen, input, output en externe factor. Voorspel daarna wat een verstoring doet.", sysBeheerst(), diagrammen.length, "diagrammen", sysStart, sysVg.rondes > 0) : null,
+        grafieken.length ? menuKaart("Grafieken en patronen", "C20 · E38 · E39 · C22", "Herken patronen, lees grafieken af (ook op een logaritmische as) en reken verder. Elke keer andere getallen.", grBeheerst(), grafieken.length, "oefeningen", grStart, grVg.rondes > 0) : null),
       !niveauVast ? h("div", { class: "rij", style: "margin-top:14px" }, h("button", { class: "knop tweede", onclick: niveauScherm }, "Ander niveau")) : "");
   }
 
@@ -1232,6 +1402,256 @@ window.OEFENSETS = window.OEFENSETS || [];
           h("div", { class: "code" }, code))));
   }
 
+
+  // =====================================================================
+  // GRAFIEKEN EN PATRONEN (C20 · E38 · E39 · C22)
+  // =====================================================================
+  const GR_RONDE = 4, GR_NODIG = 2; // beheerst = 2× op rij in één keer goed (steeds met andere getallen)
+  let grafieken = [], grSleutel = "", grVg = null;
+  function laadGraf() {
+    grafieken = (set.grafieken || []).filter((g) => g.niveaus.includes(niveau));
+    grSleutel = `grafiek:v1:${set.id}:${niveau}`;
+    grVg = opslag.lees(grSleutel) || { g: {}, rondes: 0, record: 0 };
+    grafieken.forEach((g) => { if (!grVg.g[g.id]) grVg.g[g.id] = { opRij: 0, beheerst: false, gemist: 0, laatst: -1 }; });
+    grBewaar();
+  }
+  const grBewaar = () => opslag.schrijf(grSleutel, grVg);
+  const grBeheerst = () => grafieken.filter((g) => grVg.g[g.id].beheerst).length;
+  const kopGraf = () => kopAlg("Grafieken en patronen", "C20 · E38 · E39 · C22", grBeheerst(), grafieken.length, "oefeningen");
+  const toeval = { kies: (a) => a[Math.floor(Math.random() * a.length)], int: (a, b) => a + Math.floor(Math.random() * (b - a + 1)), getal: (a, b) => a + Math.random() * (b - a) };
+
+  // ---- getallen lezen en schrijven ----
+  const SUP = { "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "⁻": "-" };
+  function leesGetal(s) {
+    if (!s) return NaN;
+    let t = String(s).trim().toLowerCase().replace(/\s+/g, "").replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻]+/g, (m) => "^" + [...m].map((c) => SUP[c]).join(""));
+    t = t.replace(/[a-z%°]+$/g, "");                      // eenheid erachter weglaten
+    t = t.replace(/[×x*·]10\^/g, "e").replace(/^10\^/, "1e");
+    if (/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(t)) t = t.replace(/\./g, "");   // 1.000.000 (Nederlands)
+    t = t.replace(",", ".");
+    const v = Number(t);
+    return Number.isFinite(v) ? v : NaN;
+  }
+  function mooiGetal(v) {
+    if (Math.abs(v) >= 1e4 && Math.abs(Math.log10(Math.abs(v)) % 1) < 1e-9) return "10" + String(Math.round(Math.log10(v))).split("").map((c) => "⁰¹²³⁴⁵⁶⁷⁸⁹"[c]).join("");
+    return v.toLocaleString("nl-NL", { maximumFractionDigits: 2 });
+  }
+
+  // ---- SVG-grafiek ----
+  function grafiekSvg(g) {
+    const NS = "http://www.w3.org/2000/svg";
+    const W = 640, H = 340, L = 78, R = 18, T = 22, B = 52;
+    const el = (n, a = {}, txt) => { const e = document.createElementNS(NS, n); for (const [k, v] of Object.entries(a)) e.setAttribute(k, v); if (txt != null) e.textContent = txt; return e; };
+    const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, class: "grafiek", role: "img", "aria-label": "grafiek" });
+    const alle = g.series.flatMap((s) => s.punten);
+    const y = Object.assign({}, g.y);
+    if (!y.log && y.max == null) {           // automatische schaal
+      const mx = Math.max(...alle.map((p) => p[1]));
+      const ruw = mx / 5, m = Math.pow(10, Math.floor(Math.log10(ruw))), f = ruw / m;
+      y.stap = (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * m;
+      y.max = Math.ceil(mx / y.stap) * y.stap;
+    }
+    const X = (v) => L + ((v - g.x.min) / (g.x.max - g.x.min)) * (W - L - R);
+    const Y = y.log ? (v) => H - B - ((Math.log10(Math.max(v, y.min)) - Math.log10(y.min)) / (Math.log10(y.max) - Math.log10(y.min))) * (H - B - T)
+                    : (v) => H - B - ((v - y.min) / (y.max - y.min)) * (H - B - T);
+    // banden
+    (g.banden || []).forEach((b) => {
+      svg.append(el("rect", { x: X(b.x1), y: T, width: X(b.x2) - X(b.x1), height: H - B - T, fill: "#FBE9E4", opacity: 0.7 }));
+      svg.append(el("text", { x: (X(b.x1) + X(b.x2)) / 2, y: T + 16, "text-anchor": "middle", "font-size": 15, "font-weight": 700, fill: "#B5401F" }, b.tekst));
+    });
+    // rasterlijnen
+    if (g.x.fijn) for (let v = g.x.min; v <= g.x.max + 1e-9; v += g.x.fijn) svg.append(el("line", { x1: X(v), x2: X(v), y1: T, y2: H - B, stroke: "#EEF2F1" }));
+    if (y.fijnStap) for (let v = y.min; v <= y.max + 1e-9; v += y.fijnStap) svg.append(el("line", { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: "#EEF2F1" }));
+    for (let v = g.x.min; v <= g.x.max + 1e-9; v += g.x.stap) {
+      svg.append(el("line", { x1: X(v), x2: X(v), y1: T, y2: H - B, stroke: "#DDE5E3" }));
+      svg.append(el("text", { x: X(v), y: H - B + 18, "text-anchor": "middle", "font-size": 12, fill: "#5A6A70" }, v.toLocaleString("nl-NL")));
+    }
+    if (y.log) {
+      for (let e = Math.round(Math.log10(y.min)); e <= Math.round(Math.log10(y.max)); e++) {
+        const v = Math.pow(10, e);
+        svg.append(el("line", { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: "#C9D6D4" }));
+        for (let k = 2; k <= 9 && e < Math.round(Math.log10(y.max)); k++) svg.append(el("line", { x1: L, x2: W - R, y1: Y(k * v), y2: Y(k * v), stroke: "#F0F4F3" }));
+        svg.append(el("text", { x: L - 8, y: Y(v) + 4, "text-anchor": "end", "font-size": 12, fill: "#5A6A70" }, e >= 4 ? mooiGetal(v) : v.toLocaleString("nl-NL")));
+      }
+    } else {
+      for (let v = y.min; v <= y.max + 1e-9; v += y.stap) {
+        svg.append(el("line", { x1: L, x2: W - R, y1: Y(v), y2: Y(v), stroke: "#DDE5E3" }));
+        svg.append(el("text", { x: L - 8, y: Y(v) + 4, "text-anchor": "end", "font-size": 12, fill: "#5A6A70" }, (Math.round(v * 100) / 100).toLocaleString("nl-NL")));
+      }
+    }
+    // assen
+    svg.append(el("line", { x1: L, x2: L, y1: T, y2: H - B, stroke: "#1E2A32", "stroke-width": 1.5 }));
+    svg.append(el("line", { x1: L, x2: W - R, y1: H - B, y2: H - B, stroke: "#1E2A32", "stroke-width": 1.5 }));
+    svg.append(el("text", { x: (L + W - R) / 2, y: H - 10, "text-anchor": "middle", "font-size": 13, fill: "#1E2A32" }, g.x.label));
+    svg.append(el("text", { x: 16, y: (T + H - B) / 2, "text-anchor": "middle", "font-size": 13, fill: "#1E2A32", transform: `rotate(-90 16 ${(T + H - B) / 2})` }, y.label + (y.log ? " (log)" : "")));
+    // pijlen bij tijdstippen
+    (g.pijlen || []).forEach((p) => {
+      svg.append(el("line", { x1: X(p.x), x2: X(p.x), y1: T, y2: H - B, stroke: "#E4572E", "stroke-dasharray": "4 4" }));
+      svg.append(el("text", { x: X(p.x) + 4, y: T + 12, "font-size": 11, fill: "#B5401F" }, p.tekst));
+    });
+    // reeksen
+    const kleuren = { teal: "#0F7C74", koraal: "#E4572E" };
+    g.series.forEach((s) => {
+      const k = kleuren[s.kleur || "teal"];
+      if (!s.alleenPunten) svg.append(el("polyline", { points: s.punten.map((p) => `${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(" "), fill: "none", stroke: k, "stroke-width": 2.5 }));
+      if (s.alleenPunten || s.punten_tonen) s.punten.forEach((p) => svg.append(el("circle", { cx: X(p[0]), cy: Y(p[1]), r: 4, fill: k })));
+    });
+    return svg;
+  }
+
+  // ---- schermen ----
+  function grStart() {
+    const tegels = grafieken.map((g) => {
+      const v = grVg.g[g.id];
+      const stippen = [];
+      for (let s = 1; s <= GR_NODIG; s++) stippen.push(h("span", { class: "stip" + (v.beheerst || s <= v.opRij ? " aan" : "") }));
+      return h("div", { class: "tegel" + (v.beheerst ? " beheerst" : "") },
+        h("div", { class: "titel" }, g.titel), h("div", { class: "klein" }, g.denkwijze),
+        h("div", { class: "stippen" }, stippen, h("span", { class: "klein", style: "margin-left:6px" }, v.beheerst ? "beheerst" : `${v.opRij} van ${GR_NODIG} op rij`)));
+    });
+    $app.replaceChildren(
+      kopGraf(),
+      h("div", { class: "kaart" },
+        vastOnderdeel ? "" : h("div", { class: "rij", style: "margin-bottom:8px" }, menuKnop()),
+        h("h2", {}, "Zo werkt het"),
+        h("ul", { class: "uitleg" },
+          h("li", {}, "Je krijgt een grafiek uit de biologie. Herken het patroon, lees af, of reken verder."),
+          h("li", {}, "Elke keer zijn de getallen anders: onthouden helpt niet, aflezen wel. Kijk altijd eerst naar de assen!"),
+          h("li", {}, `Een oefening is beheerst als je hem ${GR_NODIG} keer achter elkaar in één keer goed hebt.`)),
+        h("div", { class: "raster" }, tegels),
+        h("div", { class: "rij" },
+          h("button", { class: "knop", onclick: grNieuweRonde }, grVg.rondes ? "Start een nieuwe ronde" : "Start de eerste ronde"),
+          h("span", { class: "klein" }, `Een ronde = ${GR_RONDE} grafieken, ongeveer 5 minuten.`),
+          grVg.record ? h("span", { class: "klein" }, `Je record: ${grVg.record} van ${GR_RONDE * 2} punten.`) : null),
+        h("div", { class: "rij", style: "margin-top:14px" },
+          h("button", { class: "knop tweede", onclick: () => { if (confirmWis()) { opslag.wis(grSleutel); laadGraf(); grStart(); } } }, "Voortgang wissen"))));
+  }
+
+  let gr = null, gv = null;
+  function grNieuweRonde() {
+    grVg.rondes++;
+    const nr = grVg.rondes;
+    const open = grafieken.filter((g) => !grVg.g[g.id].beheerst), klaar = grafieken.filter((g) => grVg.g[g.id].beheerst);
+    const score = (g) => { const v = grVg.g[g.id]; return v.gemist * 2 + (nr - 1 - v.laatst) * 0.5 + Math.random() * 2; };
+    let keuze = open.sort((a, b) => score(b) - score(a)).slice(0, GR_RONDE);
+    if (keuze.length < GR_RONDE) keuze = keuze.concat(schud(klaar).slice(0, GR_RONDE - keuze.length));
+    gr = { nr, lijst: schud(keuze), i: 0, punten: 0, uitslag: [] };
+    grBewaar(); grItem();
+  }
+  function grItem() {
+    const g = gr.lijst[gr.i];
+    const opg = g.maak(toeval);
+    const volgorde = opg.soort === "mc" ? schud(opg.opties.map((_, i) => i)) : null;
+    gv = { g, opg, volgorde, pogingen: 0, gekozen: [], invoer: "", opgelost: false, uitStap: 0, uitleg: false, melding: null };
+    grTeken();
+  }
+  function grControleerGetal() {
+    const v = leesGetal(gv.invoer);
+    if (Number.isNaN(v)) { gv.melding = { soort: "info", tekst: "Vul een getal in (bijvoorbeeld 25, 1,5 of 10^4)." }; return grTeken(); }
+    gv.pogingen++;
+    const { antwoord, marge } = gv.opg;
+    const ok = Math.abs(v - antwoord) <= (marge || 0) + 1e-9 * Math.abs(antwoord);
+    if (ok) return grGoed();
+    let tip = "Nog niet goed.";
+    if (antwoord !== 0 && Math.abs(v / antwoord - 1) < 0.25) tip = "Bijna! Lees nauwkeuriger af of reken nog eens na.";
+    else if (antwoord !== 0 && (Math.abs(v / antwoord - 10) < 1 || Math.abs(v / antwoord - 0.1) < 0.02)) tip = "Je zit er een factor 10 naast. Kijk nog eens naar de as of de machten.";
+    gv.melding = { soort: "let", tekst: tip + (gv.pogingen === 1 ? " Probeer het nog een keer." : " Bekijk de uitwerking stap voor stap.") };
+    if (gv.pogingen >= 2) gv.uitleg = true;
+    grTeken();
+  }
+  function grKies(i) {
+    if (gv.opgelost || gv.gekozen.includes(i)) return;
+    gv.gekozen.push(i); gv.pogingen++;
+    if (i === gv.opg.goed) return grGoed();
+    gv.melding = { soort: "let", tekst: gv.pogingen === 1 ? "Niet goed. Kijk nog eens naar de grafiek (en naar de assen) en kies opnieuw." : "Nog niet goed. Bekijk de uitwerking stap voor stap." };
+    if (gv.pogingen >= 2) gv.uitleg = true;
+    grTeken();
+  }
+  function grGoed() {
+    gv.opgelost = true; gv.uitleg = true; gv.uitStap = gv.opg.uitleg.length;
+    const pt = gv.uitStapGezien ? 0 : gv.pogingen === 1 ? 2 : 1;
+    gv.pt = pt; gr.punten += pt;
+    const v = grVg.g[gv.g.id];
+    if (pt === 2) { v.opRij++; v.gemist = Math.max(0, v.gemist - 1); } else { v.opRij = 0; v.gemist++; }
+    gv.verandering = "";
+    if (!v.beheerst && v.opRij >= GR_NODIG) { v.beheerst = true; gv.verandering = "beheerst"; }
+    v.laatst = gr.nr;
+    gr.uitslag.push({ titel: gv.g.titel, pt, verandering: gv.verandering });
+    gv.melding = { soort: "top", tekst: `Goed! +${pt} ${pt === 1 ? "punt" : "punten"}.` + (gv.verandering ? " Deze oefening is nu beheerst." : pt === 2 && !v.beheerst ? ` Nog ${GR_NODIG - v.opRij} keer in één keer goed voor ‘beheerst’.` : "") };
+    grBewaar(); grTeken();
+  }
+  function grOpgeven() {  // uitwerking bekeken zonder goed antwoord
+    const v = grVg.g[gv.g.id];
+    v.opRij = 0; v.gemist++; v.laatst = gr.nr;
+    gr.uitslag.push({ titel: gv.g.titel, pt: 0, verandering: "" });
+    grBewaar(); grVolgende();
+  }
+  function grVolgende() { if (gr.i < gr.lijst.length - 1) { gr.i++; grItem(); } else grEinde(); }
+
+  function grTeken() {
+    const { g, opg } = gv;
+    const blok = [];
+    if (opg.soort === "mc") {
+      blok.push(h("div", { class: "opties" }, gv.volgorde.map((i) => {
+        const gekozen = gv.gekozen.includes(i);
+        const klasse = "optie" + (gekozen ? (i === opg.goed ? " goed" : " fout") : gv.opgelost && i === opg.goed ? " goed" : "");
+        return h("button", { class: klasse, disabled: gv.opgelost || gekozen, onclick: () => grKies(i) }, opg.opties[i]);
+      })));
+    } else {
+      const inp = h("input", { class: "getalinvoer", type: "text", inputmode: "decimal", value: gv.invoer, disabled: gv.opgelost, "aria-label": "antwoord",
+        oninput: (e) => { gv.invoer = e.target.value; }, onkeydown: (e) => { if (e.key === "Enter") grControleerGetal(); } });
+      blok.push(h("div", { class: "rij" }, inp, h("span", {}, opg.eenheid || ""),
+        gv.opgelost ? null : h("button", { class: "knop", onclick: grControleerGetal }, "Controleer")));
+    }
+    if (gv.melding) blok.push(h("div", { class: "melding " + gv.melding.soort }, gv.melding.tekst));
+    if (gv.uitleg) {
+      const n = opg.uitleg.length;
+      blok.push(h("div", { class: "melding info uitwerking" },
+        h("b", {}, "Uitwerking"),
+        h("ol", {}, opg.uitleg.slice(0, gv.uitStap).map((t) => h("li", {}, t))),
+        gv.uitStap < n ? h("button", { class: "knop tweede", onclick: () => { gv.uitStap++; gv.uitStapGezien = true; grTeken(); } }, gv.uitStap === 0 ? "Toon de eerste stap" : "Volgende stap") : null,
+        !gv.opgelost && gv.uitStap >= n ? h("div", { class: "klein", style: "margin-top:6px" }, "Pas je antwoord aan, of ga verder (0 punten; deze oefening komt terug).") : null));
+    }
+    const laatste = gr.i === gr.lijst.length - 1;
+    if (gv.opgelost) blok.push(h("div", { class: "rij", style: "margin-top:10px" }, h("button", { class: "knop", onclick: grVolgende }, laatste ? "Bekijk je ronde" : "Volgende grafiek")));
+    else if (gv.uitleg && gv.uitStap >= opg.uitleg.length) blok.push(h("div", { class: "rij", style: "margin-top:10px" }, h("button", { class: "knop tweede", onclick: grOpgeven }, laatste ? "Bekijk je ronde" : "Verder zonder punten")));
+
+    $app.replaceChildren(
+      kopGraf(),
+      h("div", { class: "kaart" },
+        h("div", { class: "rij", style: "justify-content:space-between" },
+          h("div", { class: "rij" }, h("button", { class: "knop tweede klein-knop", onclick: grStart }, "← Overzicht"),
+            h("span", { class: "stapinfo" }, `Grafiek ${gr.i + 1} van ${gr.lijst.length} · ${g.denkwijze}`)),
+          h("div", { class: "klein" }, `Punten deze ronde: ${gr.punten}`)),
+        h("h2", { style: "margin-top:8px" }, g.titel),
+        h("div", { class: "context" }, opg.context),
+        h("div", { class: "grafiekvak" }, grafiekSvg(opg.grafiek),
+          opg.grafiek.series.some((r) => r.naam) ? h("div", { class: "legenda" }, opg.grafiek.series.filter((r) => r.naam).map((r) =>
+            h("span", {}, h("span", { class: "legstip", style: `background:${r.kleur === "koraal" ? "#E4572E" : "#0F7C74"}` }), r.alleenPunten ? `${r.naam} (punten)` : `${r.naam} (lijn)`))) : null),
+        h("h3", { style: "margin-top:12px" }, opg.vraag),
+        blok));
+    const inp = $app.querySelector(".getalinvoer"); if (inp && !gv.opgelost) inp.focus({ preventScroll: true });
+  }
+
+  function grEinde() {
+    const max = gr.lijst.length * 2;
+    const record = gr.punten > grVg.record; if (record) grVg.record = gr.punten;
+    grBewaar();
+    const b = grBeheerst(), n = grafieken.length, rest = n - b;
+    const code = `${niveau === "havo" ? "H" : "V"} · grafieken · ronde ${gr.nr} · ${gr.punten}/${max} punten · beheerst ${b}/${n}`;
+    $app.replaceChildren(
+      kopGraf(),
+      h("div", { class: "kaart" },
+        h("h2", {}, `Ronde ${gr.nr} klaar: ${gr.punten} van ${max} punten`),
+        record && gr.nr > 1 ? h("div", { class: "melding top" }, "Nieuw persoonlijk record!") : null,
+        h("table", { class: "tabel" }, gr.uitslag.map((u) => h("tr", {}, h("td", {}, u.titel), h("td", {}, `${u.pt} ${u.pt === 1 ? "punt" : "punten"}`), h("td", { class: "omhoog" }, u.verandering === "beheerst" ? "✓ beheerst" : "")))),
+        h("p", {}, rest === 0 ? "Alle grafiekoefeningen beheerst. Knap!" : `Nog ${rest} ${rest === 1 ? "oefening" : "oefeningen"} te gaan. De volgende ronde krijg je nieuwe grafieken met andere getallen.`),
+        h("div", { class: "rij" },
+          h("button", { class: "knop", onclick: grNieuweRonde }, "Nog een ronde"),
+          h("button", { class: "knop tweede", onclick: grStart }, "Naar het overzicht"),
+          vastOnderdeel ? null : h("button", { class: "knop tweede", onclick: menu }, "Menu")),
+        h("div", { style: "margin-top:16px" }, h("div", { class: "klein" }, "Code voor Learnbeat (kopieer en plak bij de vraag onder deze oefening):"), h("div", { class: "code" }, code))));
+  }
 
   // ---------- start ----------
   if (!set) { $app.textContent = "Geen oefenstof gevonden."; return; }
