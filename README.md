@@ -1,5 +1,5 @@
 # Claudewerkplaats
-Hier plaats ik samen met Claude bestanden en bouw ik aan een interactieve leeromgeving voor biologie in het nieuwe examenprogramma.
+
 
 ## Oefenomgeving denk- en werkwijzen
 - `oefenen/`: de oefenomgeving (ketenpuzzel C21, systeemdiagram C23), havo en vwo.
