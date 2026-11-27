@@ -127,6 +127,95 @@
   .mk-tekst { font-size: .92rem; margin: 6px 0 12px; flex: 1; }
   .mk-onder { display: flex; gap: 12px; align-items: center; }
   .mk-sterk { font-weight: 700; color: var(--ink); font-size: .95rem; }
+  /* ===== frisse look ===== */
+  :root { --acc: #0F7C74; --acc2: #2BB3A3; --acc-licht: #E3F0EE; }
+  body { background:
+      radial-gradient(1200px 500px at 110% -10%, rgba(242,182,50,.16), transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, rgba(15,124,116,.14), transparent 60%),
+      radial-gradient(circle at 1px 1px, rgba(20,64,74,.07) 1px, transparent 1.5px) 0 0 / 22px 22px,
+      var(--achtergrond); background-attachment: fixed; }
+  .kaart { border-radius: 18px; box-shadow: 0 2px 4px rgba(20,64,74,.05), 0 8px 24px rgba(20,64,74,.06); }
+  .knop { background: linear-gradient(180deg, var(--acc2), var(--acc)); box-shadow: 0 3px 0 rgba(0,0,0,.18); transition: transform .08s, box-shadow .08s, filter .15s; }
+  .knop:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,.18); }
+  .knop.tweede { background: var(--wit); box-shadow: 0 2px 0 var(--lijn); }
+  .balk > div { background: linear-gradient(90deg, var(--acc), var(--acc2)); }
+  .stip.aan { background: var(--acc); }
+  .tegel { box-shadow: 0 1px 3px rgba(20,64,74,.08); }
+  .tegel.beheerst { border-color: var(--acc); background: var(--acc-licht); }
+  .melding.top { animation: pop .35s cubic-bezier(.2,1.6,.4,1); }
+  .melding.let { animation: schud .4s; }
+  @keyframes pop { from { transform: scale(.85); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes schud { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+  /* banner bovenaan elk onderdeel */
+  .banner { background: linear-gradient(120deg, var(--acc), var(--acc2)); color: #fff; border-radius: 20px; padding: 16px 20px; position: relative; overflow: hidden; box-shadow: 0 10px 24px -12px var(--acc); }
+  .banner::after { content: ""; position: absolute; right: -40px; top: -60px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,.12); pointer-events: none; }
+  .banner h1 { color: #fff; margin: 0 0 4px; }
+  .banner .klein { color: rgba(255,255,255,.88); }
+  .banner .label { background: rgba(0,0,0,.25); }
+  .banner .label.licht { background: rgba(255,255,255,.9); color: var(--acc); }
+  .banner .balk { background: rgba(255,255,255,.3); }
+  .banner .balk > div { background: #fff; }
+  .bn-icoon { font-size: 2rem; width: 62px; height: 62px; border-radius: 18px; background: rgba(255,255,255,.22); display: grid; place-items: center; flex: none; }
+  /* menukop */
+  .menukop { margin: 4px 0 14px; }
+  .menukop h1 { font-size: clamp(1.7rem, 4vw, 2.4rem); line-height: 1.1; }
+  .bovenregel { font-weight: 800; letter-spacing: .12em; text-transform: uppercase; font-size: .78rem; color: var(--koraal); margin-bottom: 4px; }
+  .markeer { background: linear-gradient(180deg, transparent 60%, rgba(242,182,50,.55) 60%); padding: 0 .1em; }
+  /* dashboard met biologisch decor */
+  .dashboard { position: relative; overflow: hidden; background-color: #14404A;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='220' viewBox='0 0 260 220'%3E%3Cg fill='none' stroke='white' stroke-opacity='.09' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='M40 60v-22M40 38l-14-16M40 38l14-16M22 18l-6-7M58 18l6-7'/%3E%3Ccircle cx='190' cy='50' r='18'/%3E%3Cpath d='M190 26v-8M190 82v-8M166 50h-8M222 50h-8M173 33l-6-6M207 67l6 6M207 33l6-6M173 67l-6 6'/%3E%3Cellipse cx='90' cy='160' rx='34' ry='22'/%3E%3Ccircle cx='98' cy='158' r='8'/%3E%3Cpath d='M200 140c10 10 10 30 0 40M220 140c-10 10-10 30 0 40M203 150h14M203 170h14'/%3E%3C/g%3E%3C/svg%3E"),
+      linear-gradient(135deg, #14404A, #1B5F67 55%, #0F7C74); background-size: 260px 220px, cover; }
+  .dashboard::before { content: ""; position: absolute; width: 320px; height: 320px; right: -90px; bottom: -160px; border-radius: 50%; background: radial-gradient(circle, rgba(242,182,50,.35), transparent 70%); pointer-events: none; }
+  .dashboard > * { position: relative; }
+  .rangicoon { margin-right: .3em; }
+  .knop.groot { background: linear-gradient(180deg, #F7C64B, #D9A21B); animation: puls 2.4s ease-in-out infinite; }
+  @keyframes puls { 0%, 100% { box-shadow: 0 3px 0 rgba(0,0,0,.2), 0 0 0 0 rgba(242,182,50,.55); } 50% { box-shadow: 0 3px 0 rgba(0,0,0,.2), 0 0 0 10px rgba(242,182,50,0); } }
+  /* ringen */
+  .ringboog { stroke: var(--acc); animation: vul 1.1s cubic-bezier(.3,.9,.3,1) both; }
+  .ringboog.vol { stroke: var(--goud); }
+  .dashboard .ringboog { stroke: #F2B632; }
+  @keyframes vul { from { stroke-dashoffset: var(--omtrek); } }
+  /* kaarten met eigen kleur */
+  .menukaart { position: relative; overflow: hidden; padding-top: 0; animation: opkomen .45s ease both; }
+  .menukaart::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 76px; background: linear-gradient(120deg, var(--acc), var(--acc2)); }
+  .menukaart::after { content: ""; position: absolute; right: -30px; top: -50px; width: 130px; height: 130px; border-radius: 50%; background: rgba(255,255,255,.15); }
+  .menukaart > * { position: relative; z-index: 1; }
+  .mk-boven { margin-top: 16px; }
+  .icoon { background: #fff; box-shadow: 0 6px 14px -6px rgba(0,0,0,.35); width: 58px; height: 58px; font-size: 1.9rem; border-radius: 16px; transition: transform .2s; }
+  .menukaart:hover .icoon { transform: rotate(-8deg) scale(1.08); }
+  .s-nieuw { background: #fff; color: var(--acc); }
+  .s-bezig { background: rgba(255,255,255,.85); color: var(--acc); }
+  .mk-titel { margin-top: 14px; }
+  .mk-label { color: var(--acc); }
+  .menukaart:hover, .menukaart:focus-visible { border-color: var(--acc); box-shadow: 0 14px 28px -12px var(--acc); }
+  .menukaart.aanrader { border-color: var(--goud); box-shadow: 0 0 0 3px rgba(242,182,50,.35), 0 10px 24px -12px var(--acc); }
+  .lint { position: absolute; z-index: 2; top: 14px; right: -34px; transform: rotate(35deg); background: var(--goud); color: var(--ink); font-size: .7rem; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; padding: 3px 40px; box-shadow: 0 2px 4px rgba(0,0,0,.2); }
+  .menukaart.aanrader .status { visibility: hidden; }
+  .menukaart.klaar::before { background: linear-gradient(120deg, #D9A21B, #F7C64B); }
+  .menukaart.klaar .ringboog { stroke: var(--goud); }
+  @keyframes opkomen { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  /* denkwijzen */
+  .dw { animation: opkomen .4s ease both; position: relative; overflow: hidden; }
+  .dw.fam-c { --acc: #0F7C74; --acc2: #2BB3A3; background: #EEF7F5; }
+  .dw.fam-e { --acc: #E4572E; --acc2: #F29E4C; background: #FDF1EC; }
+  .dw .dw-code { color: var(--acc); font-size: 1.1rem; }
+  .dw.vol { border-color: var(--goud); background: #FBF4E1; }
+  .dw.vol::after { content: "★"; position: absolute; right: 8px; top: 4px; color: var(--goud); font-size: 1.2rem; }
+  .dwkaart h2 { display: flex; gap: .5em; align-items: center; }
+  /* einde ronde */
+  .rondebanner { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; background: var(--acc-licht); border-radius: 16px; padding: 14px 18px; margin-bottom: 12px; }
+  .rondebanner h2 { margin: 2px 0 4px; font-size: 1.5rem; }
+  .sterren { font-size: 2.2rem; line-height: 1; letter-spacing: .05em; }
+  .ster { color: #D6DEDD; display: inline-block; }
+  .ster.aan { color: var(--goud); animation: sterpop .5s cubic-bezier(.2,1.8,.4,1) both; text-shadow: 0 2px 0 rgba(0,0,0,.12); }
+  @keyframes sterpop { from { transform: scale(0) rotate(-90deg); } to { transform: none; } }
+  /* confetti */
+  .confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 50; }
+  .confetti i { position: absolute; top: -20px; animation-name: val; animation-timing-function: cubic-bezier(.3,.6,.6,1); animation-fill-mode: forwards; }
+  @keyframes val { to { transform: translate(var(--dx), 105vh) rotate(720deg); opacity: .9; } }
+  .context, .melding.info { background: var(--acc-licht); }
+  .stapinfo, .grens-kop { color: var(--acc); }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
   /* systeemdiagram */
   .sysdiag { display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
   .ext { align-self: center; text-align: center; width: min(320px, 100%); }
@@ -246,14 +335,55 @@
 
   // ---------- kop ----------
   function kop() { return kopAlg("Ketenpuzzel", "C21 oorzaak-gevolg", aantalBeheerst(), ketens.length, "ketens"); }
+  // elk onderdeel een eigen kleur en icoon
+  const STIJL = {
+    keten: { icoon: "🔗", acc: "#E4572E", acc2: "#F29E4C", licht: "#FDEDE6" },
+    systeem: { icoon: "🔄", acc: "#6A4C93", acc2: "#9D7BC7", licht: "#F0EAF8" },
+    grafiek: { icoon: "📈", acc: "#1971C2", acc2: "#4DABF7", licht: "#E7F1FB" },
+    reken: { icoon: "🧮", acc: "#C47F00", acc2: "#F2B632", licht: "#FCF3DD" },
+    structuur: { icoon: "🔬", acc: "#2B8A3E", acc2: "#69C07A", licht: "#E7F5EA" },
+    denkwijze: { icoon: "🧭", acc: "#C2255C", acc2: "#F06595", licht: "#FBE7EF" },
+  };
+  const TITEL_CODE = { "Ketenpuzzel": "keten", "Schema's: systemen en regelkringen": "systeem" };
+  const stijlVar = (code) => { const s = STIJL[code] || STIJL.keten; return `--acc:${s.acc};--acc2:${s.acc2};--acc-licht:${s.licht}`; };
   function kopAlg(titel, label, b, n, eenheid) {
-    return h("div", { class: "kopbalk" },
-      h("div", {},
+    const code = TITEL_CODE[titel] || (Object.values(GEN).find((o) => o.cfg.titel === titel) || { cfg: {} }).cfg.code;
+    document.documentElement.setAttribute("style", stijlVar(code));
+    return h("div", { class: "kopbalk banner" },
+      h("div", { class: "bn-icoon", "aria-hidden": "true" }, (STIJL[code] || {}).icoon || "★"),
+      h("div", { style: "flex:1;min-width:200px" },
         h("h1", {}, titel),
         h("div", { class: "rij" }, h("span", { class: "label" }, niveau.toUpperCase()), h("span", { class: "label licht" }, label), h("span", { class: "klein" }, set.titel))),
       h("div", { class: "voortgang" },
         h("div", { class: "klein" }, `Beheerst: ${b} van ${n} ${eenheid}`),
         h("div", { class: "balk" }, h("div", { style: `width:${n ? (100 * b) / n : 0}%` }))));
+  }
+
+  // ---------- feestjes ----------
+  const rustig = () => { try { return matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; } };
+  function feest(aantal = 70) {
+    if (rustig()) return;
+    const kl = ["#E4572E", "#F2B632", "#0F7C74", "#4DABF7", "#9D7BC7", "#F06595", "#69C07A"];
+    const laag = h("div", { class: "confetti", "aria-hidden": "true" });
+    for (let i = 0; i < aantal; i++) {
+      const s = h("i", {});
+      s.style.cssText = `left:${Math.random() * 100}%;background:${kl[i % kl.length]};animation-delay:${Math.random() * 0.4}s;animation-duration:${1.4 + Math.random() * 1.2}s;transform:rotate(${Math.random() * 360}deg);width:${6 + Math.random() * 6}px;height:${8 + Math.random() * 8}px;border-radius:${Math.random() < 0.4 ? "50%" : "2px"}`;
+      s.style.setProperty("--dx", `${(Math.random() - 0.5) * 160}px`);
+      laag.append(s);
+    }
+    document.body.append(laag); setTimeout(() => laag.remove(), 3000);
+  }
+  function rondeBanner(nr, pt, max) {
+    const f = max ? pt / max : 0, sterren = f >= 0.9 ? 3 : f >= 0.65 ? 2 : f > 0 ? 1 : 0;
+    const zin = ["Elke ronde telt. Probeer het nog eens!", "Lekker bezig!", "Sterke ronde!", "Topronde!"][sterren];
+    if (sterren >= 2) setTimeout(() => feest(sterren === 3 ? 110 : 60), 150);
+    return h("div", { class: "rondebanner" },
+      ring(f, 112, 12, `${pt}/${max}`),
+      h("div", {},
+        h("div", { class: "klein" }, `Ronde ${nr} klaar`),
+        h("h2", {}, zin),
+        h("div", { class: "sterren", "aria-label": `${sterren} van 3 sterren` }, [1, 2, 3].map((i) => h("span", { class: "ster" + (i <= sterren ? " aan" : ""), style: `animation-delay:${0.25 + i * 0.18}s` }, "★"))),
+        h("div", { class: "klein" }, `${pt} van ${max} punten`)));
   }
 
   // ---------- niveaukeuze ----------
@@ -525,7 +655,7 @@
     $app.replaceChildren(
       kop(),
       h("div", { class: "kaart" },
-        h("h2", {}, `Ronde ${ronde.nr} klaar: ${ronde.punten} van ${max} punten`),
+        rondeBanner(ronde.nr, ronde.punten, max),
         record && ronde.nr > 1 ? h("div", { class: "melding top" }, "Nieuw persoonlijk record!") : null,
         h("table", { class: "tabel" }, ronde.uitslag.map((u) => h("tr", {},
           h("td", {}, u.titel), h("td", {}, `${u.pt} ${u.pt === 1 ? "punt" : "punten"}`),
@@ -577,8 +707,7 @@
         b: sysBeheerst(), n: diagrammen.length, eenheid: "schema's", start: sysStart, gestart: sysVg.rondes > 0, record: sysVg.record,
         items: diagrammen.map((x) => ({ dw: [x.vorm === "regelkring" ? "C26" : "C23"], b: sysVg.d[x.id].beheerst })) },
     ];
-    const ICOON = { grafiek: "📈", reken: "🧮", structuur: "🔬", denkwijze: "🧭" };
-    Object.values(GEN).forEach((o) => lijst.push({ code: o.cfg.code, titel: o.cfg.titel, label: o.cfg.label, icoon: ICOON[o.cfg.code] || "★", tekst: o.cfg.menuTekst,
+    Object.values(GEN).forEach((o) => lijst.push({ code: o.cfg.code, titel: o.cfg.titel, label: o.cfg.label, icoon: (STIJL[o.cfg.code] || {}).icoon || "★", tekst: o.cfg.menuTekst,
       b: o.beheerst(), n: o.aantal(), eenheid: o.cfg.eenheid, start: o.start, gestart: o.gestart(), record: o.record(), items: o.items() }));
     return lijst.filter((x) => x.n > 0);
   }
@@ -587,18 +716,20 @@
     const ns = "http://www.w3.org/2000/svg", el = (t, a) => { const e = document.createElementNS(ns, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
     const svg = el("svg", { viewBox: `0 0 ${maat} ${maat}`, width: maat, height: maat, class: "ring", role: "img", "aria-label": tekst });
     svg.append(el("circle", { cx: maat / 2, cy: maat / 2, r, fill: "none", stroke: "var(--teal-mid)", "stroke-width": dikte }));
-    if (frac > 0) svg.append(el("circle", { cx: maat / 2, cy: maat / 2, r, fill: "none", stroke: frac >= 1 ? "var(--goud)" : "var(--teal)", "stroke-width": dikte, "stroke-linecap": "round",
-      "stroke-dasharray": `${(omtrek * Math.min(frac, 1)).toFixed(1)} ${omtrek.toFixed(1)}`, transform: `rotate(-90 ${maat / 2} ${maat / 2})` }));
+    if (frac > 0) { const c = el("circle", { cx: maat / 2, cy: maat / 2, r, fill: "none", class: "ringboog" + (frac >= 1 ? " vol" : ""), "stroke-width": dikte, "stroke-linecap": "round",
+      "stroke-dasharray": omtrek.toFixed(1), "stroke-dashoffset": (omtrek * (1 - Math.min(frac, 1))).toFixed(1), transform: `rotate(-90 ${maat / 2} ${maat / 2})` });
+      c.style.setProperty("--omtrek", omtrek.toFixed(1)); svg.append(c); }
     const t = el("text", { x: "50%", y: "50%", "text-anchor": "middle", "dominant-baseline": "central", class: "ringtekst", "font-size": maat * 0.24 }); t.textContent = tekst; svg.append(t);
     return svg;
   }
 
   function menuKaart(x, aanrader) {
     const klaar = x.b === x.n, status = klaar ? "✓ alles beheerst" : x.gestart ? "bezig" : "nieuw";
-    return h("button", { class: "menukaart" + (klaar ? " klaar" : "") + (aanrader ? " aanrader" : ""), onclick: x.start, "aria-label": `${x.titel}: ${x.b} van ${x.n} ${x.eenheid} beheerst` },
+    return h("button", { class: "menukaart" + (klaar ? " klaar" : "") + (aanrader ? " aanrader" : ""), style: stijlVar(x.code), onclick: x.start, "aria-label": `${x.titel}: ${x.b} van ${x.n} ${x.eenheid} beheerst` },
       h("div", { class: "mk-boven" },
         h("span", { class: "icoon", "aria-hidden": "true" }, x.icoon),
         h("span", { class: "status " + (klaar ? "s-klaar" : x.gestart ? "s-bezig" : "s-nieuw") }, status)),
+      aanrader ? h("div", { class: "lint" }, "aanrader") : "",
       h("div", { class: "mk-titel" }, x.titel),
       h("div", { class: "mk-label" }, x.label),
       h("div", { class: "mk-tekst" }, x.tekst),
@@ -611,7 +742,8 @@
     const lijst = onderdelen();
     const B = lijst.reduce((s, x) => s + x.b, 0), N = lijst.reduce((s, x) => s + x.n, 0);
     const ri = rangVan(tot.punten), rang = RANGEN[ri][1], volgende = RANGEN[ri + 1];
-    const nieuwRang = ri > (tot.rangGezien || 0); if (nieuwRang) { tot.rangGezien = ri; totBewaar(); }
+    const nieuwRang = ri > (tot.rangGezien || 0); if (nieuwRang) { tot.rangGezien = ri; totBewaar(); setTimeout(() => feest(120), 200); }
+    document.documentElement.removeAttribute("style");
     const reeks = dagenOpRij(), vandaagGedaan = tot.dagen.includes(vandaag());
     // aanrader: ga verder waar je was; anders het onderdeel met het laagste percentage
     const open = lijst.filter((x) => x.b < x.n);
@@ -624,15 +756,16 @@
     const code = `${niveau === "havo" ? "H" : "V"} · totaal · ${tot.punten} punten · beheerst ${B}/${N} · niveau ${rang}`;
 
     $app.replaceChildren(
-      h("div", { class: "kopbalk" }, h("div", {},
-        h("h1", {}, "Oefenen met denk- en werkwijzen"),
+      h("div", { class: "menukop" }, h("div", {},
+        h("div", { class: "bovenregel" }, "Biologie · try-out 1"),
+        h("h1", {}, "Oefenen met ", h("span", { class: "markeer" }, "denk- en werkwijzen")),
         h("div", { class: "rij" }, h("span", { class: "label" }, niveau.toUpperCase()), h("span", { class: "klein" }, set.titel)))),
       nieuwRang ? h("div", { class: "melding top feest" }, `Nieuw niveau bereikt: ${rang}! `, ri < RANGEN.length - 1 ? `Op naar ${RANGEN[ri + 1][1]}.` : "Hoger kan niet.") : "",
       h("div", { class: "dashboard" },
         h("div", { class: "db-ring" }, ring(N ? B / N : 0, 132, 14, `${N ? Math.round((100 * B) / N) : 0}%`),
           h("div", { class: "klein", style: "text-align:center" }, `${B} van ${N} oefeningen beheerst`)),
         h("div", { class: "db-midden" },
-          h("div", { class: "db-rang" }, h("span", { class: "klein" }, "Jouw niveau"), h("div", { class: "rangnaam" }, rang)),
+          h("div", { class: "db-rang" }, h("span", { class: "klein" }, "Jouw niveau"), h("div", { class: "rangnaam" }, h("span", { class: "rangicoon", "aria-hidden": "true" }, ["⚛️", "🦠", "🩸", "🫀", "🫁", "🧍", "👥", "🌳", "🌍"][ri]), rang)),
           volgende ? h("div", {},
             h("div", { class: "balk dik" }, h("div", { style: `width:${(100 * (tot.punten - RANGEN[ri][0])) / (volgende[0] - RANGEN[ri][0])}%` })),
             h("div", { class: "klein" }, `nog ${volgende[0] - tot.punten} punten tot ${volgende[1]}`)) : h("div", { class: "klein" }, "Hoogste niveau bereikt."),
@@ -650,11 +783,11 @@
         h("h2", {}, "Zo sta je ervoor per denk- en werkwijze"),
         h("div", { class: "dwlijst" }, dwCodesLijst.map((c) => {
           const f = dw[c].b / dw[c].n;
-          return h("div", { class: "dw" + (f >= 1 ? " vol" : ""), title: `${c} ${DW_NAAM[c]}: ${dw[c].b} van ${dw[c].n} beheerst` },
+          return h("div", { class: "dw " + (c[0] === "E" ? "fam-e" : "fam-c") + (f >= 1 ? " vol" : ""), style: `animation-delay:${0.03 * dwCodesLijst.indexOf(c)}s`, title: `${c} ${DW_NAAM[c]}: ${dw[c].b} van ${dw[c].n} beheerst` },
             h("div", { class: "dw-code" }, c), h("div", { class: "dw-naam" }, DW_NAAM[c]),
             h("div", { class: "balk" }, h("div", { style: `width:${100 * f}%` })));
         }))),
-      h("div", { class: "menu" }, lijst.map((x) => menuKaart(x, x === aanrader))),
+      h("div", { class: "menu" }, lijst.map((x, i) => { const k = menuKaart(x, x === aanrader); k.style.animationDelay = `${0.06 * i}s`; return k; })),
       h("div", { class: "kaart", style: "margin-top:14px" },
         h("div", { class: "klein" }, "Code voor Learnbeat (totaaloverzicht):"), h("div", { class: "code" }, code),
         h("p", { class: "klein", style: "margin:10px 0 0" }, "Je voortgang wordt alleen in deze browser op dit apparaat bewaard. Op een ander apparaat, in een privévenster of na het wissen van je browsergegevens begin je opnieuw."),
@@ -877,7 +1010,7 @@
     $app.replaceChildren(
       kopSys(),
       h("div", { class: "kaart" },
-        h("h2", {}, `Ronde ${sr.nr} klaar: ${sr.punten} van ${sr.max} punten`),
+        rondeBanner(sr.nr, sr.punten, sr.max),
         record && sr.nr > 1 ? h("div", { class: "melding top" }, "Nieuw persoonlijk record!") : null,
         h("table", { class: "tabel" }, sr.uitslag.map((u) => h("tr", {},
           h("td", {}, u.titel), h("td", {}, `${u.pt} van ${u.max}`),
@@ -1131,7 +1264,7 @@
       const code = `${niveau === "havo" ? "H" : "V"} · ${cfg.code} · ronde ${r.nr} · ${r.punten}/${max} punten · beheerst ${b}/${n}`;
       $app.replaceChildren(kopO(),
         h("div", { class: "kaart" },
-          h("h2", {}, `Ronde ${r.nr} klaar: ${r.punten} van ${max} punten`),
+          rondeBanner(r.nr, r.punten, max),
           record && r.nr > 1 ? h("div", { class: "melding top" }, "Nieuw persoonlijk record!") : null,
           h("table", { class: "tabel" }, r.uitslag.map((u) => h("tr", {}, h("td", {}, u.titel), h("td", {}, `${u.pt} ${u.pt === 1 ? "punt" : "punten"}`), h("td", { class: "omhoog" }, u.verandering === "beheerst" ? "✓ beheerst" : "")))),
           h("p", {}, rest === 0 ? "Alles beheerst. Knap!" : `Nog ${rest} ${rest === 1 ? "oefening" : "oefeningen"} te gaan. De volgende ronde krijg je nieuwe varianten.`),
